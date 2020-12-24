@@ -1,0 +1,18 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest": true
+  },
+  "extends": ["airbnb-base"],
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "rules": {
+    "comma-dangle": ["error", "never"],
+    "one-var": ["error", { "initialized": "never" }],
+    "one-var-declaration-per-line": ["error", "initializations"],
+    "space-before-blocks": "error"
+  }
+}
