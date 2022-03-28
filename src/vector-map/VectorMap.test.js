@@ -1,10 +1,8 @@
 const _ = require('lodash');
 
 const Node = require('../node/Node');
-const {
-  KEYS,
-  VectorMap
-} = require('./VectorMap');
+const keys = require('../keys.json');
+const VectorMap = require('./VectorMap');
 
 describe('VectorMap', () => {
   let height, nodes, width, vectorMap;
@@ -13,7 +11,7 @@ describe('VectorMap', () => {
     width = 3;
     height = 5;
     nodes = [];
-    vectorMap = new VectorMap(width, height, nodes);
+    vectorMap = new VectorMap(width, height, nodes, keys);
   });
 
   test('is a VectorMap with the correct properties', () => {
@@ -21,6 +19,130 @@ describe('VectorMap', () => {
     expect(vectorMap.width).toBe(width);
     expect(vectorMap.height).toBe(height);
     expect(vectorMap.nodes).toEqual(nodes);
+  });
+
+  describe('static', () => {
+    describe('convertStringToVectorMap', () => {
+      let mockConvertTwoDimensionalArrayToVectorMap, returnedVectorMap, str;
+
+      beforeEach(() => {
+        returnedVectorMap = 'returnedVectorMap';
+        str = '◻︎◻︎◻︎◼︎◼︎◼︎◼︎\n'
+          + '◻︎◻︎◻︎◘◻︎◻︎◼︎\n'
+          + '◼︎◻︎◻︎◼︎◻︎◻︎◼︎\n'
+          + '◼︎◻︎◻︎◼︎◻︎◻︎◻︎\n'
+          + '◼︎◼︎◼︎◼︎◻︎◻︎◻︎';
+
+        mockConvertTwoDimensionalArrayToVectorMap = jest
+          .spyOn(VectorMap, 'convertTwoDimensionalArrayToVectorMap')
+          .mockReturnValue(returnedVectorMap);
+      });
+
+      afterEach(() => {
+        mockConvertTwoDimensionalArrayToVectorMap.mockRestore();
+      });
+
+      test('converts the string to a two dimensional array and calls '
+        + 'VectorMap#convertTwoDimensionalArrayToVectorMap with it', () => {
+        const expectedArray = [
+          ['◻︎', '◻︎', '◻︎', '◼︎', '◼︎', '◼︎', '◼︎'],
+          ['◻︎', '◻︎', '◻︎', '◘', '◻︎', '◻︎', '◼︎'],
+          ['◼︎', '◻︎', '◻︎', '◼︎', '◻︎', '◻︎', '◼︎'],
+          ['◼︎', '◻︎', '◻︎', '◼︎', '◻︎', '◻︎', '◻︎'],
+          ['◼︎', '◼︎', '◼︎', '◼︎', '◻︎', '◻︎', '◻︎']
+        ];
+
+        VectorMap.convertStringToVectorMap(str);
+        expect(mockConvertTwoDimensionalArrayToVectorMap).toHaveBeenCalledWith(expectedArray);
+      });
+
+      test('returns the result of convertTwoDimensionalArrayToVectorMap', () => {
+        expect(VectorMap.convertStringToVectorMap(str)).toBe(returnedVectorMap);
+      });
+    });
+
+    describe('convertTwoDimensionalArrayToVectorMap', () => {
+      test('throws an error when the arrays are not all the same length', () => {
+        const invalidArray = [
+          ['◻︎', '◻︎', '◻︎', '◼︎', '◼︎', '◼︎', '◼︎'],
+          ['◻︎', '◻︎', '◻︎', '◻︎', '◻︎', '◻︎'],
+          ['◼︎', '◻︎', '◻︎', '◼︎', '◻︎', '◻︎', '◼︎']
+        ];
+
+        expect(() => VectorMap.convertTwoDimensionalArrayToVectorMap(invalidArray))
+          .toThrowError('VectorMap: cannot convert arrays with non-standard length');
+      });
+
+      test('returns a new vector map with a node for every array index', () => {
+        const validArray = [
+          ['◻︎', '◻︎', '◻︎', '◼︎', '◼︎', '◼︎', '◼︎'],
+          ['◻︎', '◻︎', '◻︎', '◘', '◻︎', '◻︎', '◼︎'],
+          ['◼︎', '◻︎', '◻︎', '◼︎', '◻︎', '◻︎', '◼︎'],
+          ['◼︎', '◻︎', '◻︎', '◼︎', '◻︎', '◻︎', '◻︎'],
+          ['◼︎', '◼︎', '◼︎', '◼︎', '◻︎', '◻︎', '◻︎']
+        ];
+
+        const newVectorMap = VectorMap.convertTwoDimensionalArrayToVectorMap(validArray);
+
+        expect(newVectorMap).toBeInstanceOf(VectorMap);
+        expect(newVectorMap.width).toBe(validArray[0].length);
+        expect(newVectorMap.height).toBe(validArray.length);
+        expect(newVectorMap.nodes).toHaveLength(newVectorMap.width * newVectorMap.height);
+        _.each(newVectorMap.nodes, (node) => expect(node).toBeInstanceOf(Node));
+      });
+
+      test('attaches the correct vectors to every node based on their key', () => {
+        const validArray = [
+          ['◼︎', '◻︎', '◼︎'],
+          ['◼︎', '◘', '◻︎'],
+          ['◻︎', '◼︎', '◼︎']
+        ];
+
+        const newVectorMap = VectorMap.convertTwoDimensionalArrayToVectorMap(validArray);
+
+        expect(newVectorMap.nodes[0].vectors).toHaveLength(1);
+        expect(newVectorMap.nodes[0].vectors[0].destination).toBe(newVectorMap.nodes[3]);
+        expect(newVectorMap.nodes[0].vectors[0].magnitude).toBe(keys['◼︎'].magnitude);
+
+        expect(newVectorMap.nodes[1].vectors).toHaveLength(1);
+        expect(newVectorMap.nodes[1].vectors[0].destination).toBe(newVectorMap.nodes[4]);
+        expect(newVectorMap.nodes[1].vectors[0].magnitude).toBe(keys['◘'].magnitude);
+
+        expect(newVectorMap.nodes[2].vectors).toHaveLength(0);
+
+        expect(newVectorMap.nodes[3].vectors).toHaveLength(2);
+        expect(newVectorMap.nodes[3].vectors[0].destination).toBe(newVectorMap.nodes[0]);
+        expect(newVectorMap.nodes[3].vectors[0].magnitude).toBe(keys['◼︎'].magnitude);
+        expect(newVectorMap.nodes[3].vectors[1].destination).toBe(newVectorMap.nodes[4]);
+        expect(newVectorMap.nodes[3].vectors[1].magnitude).toBe(keys['◘'].magnitude);
+
+        expect(newVectorMap.nodes[4].vectors).toHaveLength(4);
+        expect(newVectorMap.nodes[4].vectors[0].destination).toBe(newVectorMap.nodes[3]);
+        expect(newVectorMap.nodes[4].vectors[0].magnitude).toBe(keys['◼︎'].magnitude);
+        expect(newVectorMap.nodes[4].vectors[1].destination).toBe(newVectorMap.nodes[1]);
+        expect(newVectorMap.nodes[4].vectors[1].magnitude).toBe(keys['◻︎'].magnitude);
+        expect(newVectorMap.nodes[4].vectors[2].destination).toBe(newVectorMap.nodes[5]);
+        expect(newVectorMap.nodes[4].vectors[2].magnitude).toBe(keys['◻︎'].magnitude);
+        expect(newVectorMap.nodes[4].vectors[3].destination).toBe(newVectorMap.nodes[7]);
+        expect(newVectorMap.nodes[4].vectors[3].magnitude).toBe(keys['◼︎'].magnitude);
+
+        expect(newVectorMap.nodes[5].vectors).toHaveLength(1);
+        expect(newVectorMap.nodes[5].vectors[0].destination).toBe(newVectorMap.nodes[4]);
+        expect(newVectorMap.nodes[5].vectors[0].magnitude).toBe(keys['◘'].magnitude);
+
+        expect(newVectorMap.nodes[6].vectors).toHaveLength(0);
+
+        expect(newVectorMap.nodes[7].vectors).toHaveLength(2);
+        expect(newVectorMap.nodes[7].vectors[0].destination).toBe(newVectorMap.nodes[4]);
+        expect(newVectorMap.nodes[7].vectors[0].magnitude).toBe(keys['◘'].magnitude);
+        expect(newVectorMap.nodes[7].vectors[1].destination).toBe(newVectorMap.nodes[8]);
+        expect(newVectorMap.nodes[7].vectors[1].magnitude).toBe(keys['◼︎'].magnitude);
+
+        expect(newVectorMap.nodes[8].vectors).toHaveLength(1);
+        expect(newVectorMap.nodes[8].vectors[0].destination).toBe(newVectorMap.nodes[7]);
+        expect(newVectorMap.nodes[8].vectors[0].magnitude).toBe(keys['◼︎'].magnitude);
+      });
+    });
   });
 
   describe('findNode', () => {
@@ -56,110 +178,43 @@ describe('VectorMap', () => {
       expect(largeVectorMap.findNode(0, 2)).toBe(largeVectorMap.nodes[4]);
       expect(largeVectorMap.findNode(1, 2)).toBe(largeVectorMap.nodes[5]);
     });
-  });
 
-  describe('static', () => {
-    describe('convertStringToVectorMap', () => {
-      let mockConvertTwoDimensionalArrayToVectorMap, returnedVectorMap, str;
-
-      beforeEach(() => {
-        returnedVectorMap = 'returnedVectorMap';
-        str = '...####\n'
-          + '......#\n'
-          + '#..#..#\n'
-          + '#..#...\n'
-          + '####...';
-
-        mockConvertTwoDimensionalArrayToVectorMap = jest
-          .spyOn(VectorMap, 'convertTwoDimensionalArrayToVectorMap')
-          .mockReturnValue(returnedVectorMap);
-      });
-
-      afterEach(() => {
-        mockConvertTwoDimensionalArrayToVectorMap.mockRestore();
-      });
-
-      test('converts the string to a two dimensional array and calls '
-        + 'VectorMap#convertTwoDimensionalArrayToVectorMap with it', () => {
-        const expectedArray = [
-          ['.', '.', '.', '#', '#', '#', '#'],
-          ['.', '.', '.', '.', '.', '.', '#'],
-          ['#', '.', '.', '#', '.', '.', '#'],
-          ['#', '.', '.', '#', '.', '.', '.'],
-          ['#', '#', '#', '#', '.', '.', '.']
-        ];
-
-        VectorMap.convertStringToVectorMap(str);
-        expect(mockConvertTwoDimensionalArrayToVectorMap).toHaveBeenCalledWith(expectedArray);
-      });
-
-      test('returns the result of convertTwoDimensionalArrayToVectorMap', () => {
-        expect(VectorMap.convertStringToVectorMap(str)).toBe(returnedVectorMap);
-      });
-    });
-
-    describe('convertTwoDimensionalArrayToVectorMap', () => {
-      test('throws an error when the arrays are not all the same length', () => {
-        const invalidArray = [
-          ['.', '.', '.', '#', '#', '#', '#'],
-          ['.', '.', '.', '.', '.', '.'],
-          ['#', '.', '.', '#', '.', '.', '#']
-        ];
-
-        expect(() => VectorMap.convertTwoDimensionalArrayToVectorMap(invalidArray))
-          .toThrowError('Pathfinder: cannot convert arrays with nonstandard length');
-      });
-
-      test('returns a new vector map with a node for every array index', () => {
-        const validArray = [
-          ['.', '.', '.', '#', '#', '#', '#'],
-          ['.', '.', '.', '.', '.', '.', '#'],
-          ['#', '.', '.', '#', '.', '.', '#'],
-          ['#', '.', '.', '#', '.', '.', '.'],
-          ['#', '#', '#', '#', '.', '.', '.']
-        ];
-
-        const newVectorMap = VectorMap.convertTwoDimensionalArrayToVectorMap(validArray);
-
-        expect(newVectorMap).toBeInstanceOf(VectorMap);
-        expect(newVectorMap.width).toBe(validArray[0].length);
-        expect(newVectorMap.height).toBe(validArray.length);
-        expect(newVectorMap.nodes).toHaveLength(newVectorMap.width * newVectorMap.height);
-        _.each(newVectorMap.nodes, (node) => expect(node).toBeInstanceOf(Node));
-      });
-
-      test('attaches the correct vectors to every node based on their key', () => {
-        const validArray = [
-          ['#', '.', '#'],
-          ['#', '.', '.'],
-          ['.', '#', '#']
-        ];
-
-        const newVectorMap = VectorMap.convertTwoDimensionalArrayToVectorMap(validArray);
-
-        expect(newVectorMap.nodes[0].vectors).toHaveLength(0);
-
-        expect(newVectorMap.nodes[1].vectors).toHaveLength(1);
-        expect(newVectorMap.nodes[1].vectors[0].destination).toBe(newVectorMap.nodes[4]);
-        expect(newVectorMap.nodes[1].vectors[0].magnitude).toBe(KEYS.PATH.MAGNITUDE);
-
-        expect(newVectorMap.nodes[2].vectors).toHaveLength(0);
-        expect(newVectorMap.nodes[3].vectors).toHaveLength(0);
-
-        expect(newVectorMap.nodes[4].vectors).toHaveLength(2);
-        expect(newVectorMap.nodes[4].vectors[0].destination).toBe(newVectorMap.nodes[1]);
-        expect(newVectorMap.nodes[4].vectors[0].magnitude).toBe(KEYS.PATH.MAGNITUDE);
-        expect(newVectorMap.nodes[4].vectors[1].destination).toBe(newVectorMap.nodes[5]);
-        expect(newVectorMap.nodes[4].vectors[1].magnitude).toBe(KEYS.PATH.MAGNITUDE);
-
-        expect(newVectorMap.nodes[5].vectors).toHaveLength(1);
-        expect(newVectorMap.nodes[5].vectors[0].destination).toBe(newVectorMap.nodes[4]);
-        expect(newVectorMap.nodes[5].vectors[0].magnitude).toBe(KEYS.PATH.MAGNITUDE);
-
-        expect(newVectorMap.nodes[6].vectors).toHaveLength(0);
-        expect(newVectorMap.nodes[7].vectors).toHaveLength(0);
-        expect(newVectorMap.nodes[8].vectors).toHaveLength(0);
-      });
+    test('returns undefined for out-of-bounds inputs', () => {
+      expect(vectorMap.findNode(-1, -1)).toBeUndefined();
+      expect(vectorMap.findNode(4, 4)).toBeUndefined();
+      expect(largeVectorMap.findNode(-1, -1)).toBeUndefined();
+      expect(largeVectorMap.findNode(4, 4)).toBeUndefined();
     });
   });
+
+  describe('isTraversable', () => {
+    test('returns true for traversable keys sets', () => {
+      expect(vectorMap.isTraversable('◻︎', '◻︎')).toBe(true);
+      expect(vectorMap.isTraversable('◻︎', '◘')).toBe(true);
+      expect(vectorMap.isTraversable('◼︎', '◼︎')).toBe(true);
+      expect(vectorMap.isTraversable('◼︎', '◘')).toBe(true);
+      expect(vectorMap.isTraversable('◘', '◘')).toBe(true);
+    });
+
+    test('returns false for non-traversable keys', () => {
+      expect(vectorMap.isTraversable('◻︎', '◼︎')).toBe(false);
+      expect(vectorMap.isTraversable('◼︎', '◻︎')).toBe(false);
+    });
+
+    test('returns false for unlisted keys', () => {
+      expect(vectorMap.isTraversable('◻︎', '™')).toBe(false);
+      expect(vectorMap.isTraversable('™', '◻︎')).toBe(false);
+      expect(vectorMap.isTraversable('™', '™')).toBe(false);
+    });
+  });
+
+  // describe('toString', () => {
+  //   test('', () => {
+  //   });
+  // });
+
+  // describe('toTwoDimensionalArray', () => {
+  //   test('', () => {
+  //   });
+  // });
 });

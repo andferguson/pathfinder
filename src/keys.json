@@ -1,0 +1,36 @@
+{
+  "◻︎": {
+    "meta": {
+      "name": "path",
+      "description": "A normal path that can be traversed."
+    },
+    "magnitude": 1,
+    "traversableKeys": [
+      "◻︎",
+      "◘"
+    ]
+  },
+  "◼︎": {
+    "meta": {
+      "name": "wall",
+      "description": "A high wall that can be traversed."
+    },
+    "magnitude": 1,
+    "traversableKeys": [
+      "◼︎",
+      "◘"
+    ]
+  },
+  "◘": {
+    "meta": {
+      "name": "step",
+      "description": "A step that can transition between paths and walls."
+    },
+    "magnitude": 2,
+    "traversableKeys": [
+      "◻︎",
+      "◼︎",
+      "◘"
+    ]
+  }
+}

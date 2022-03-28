@@ -1,31 +1,24 @@
 const _ = require('lodash');
 
 const Node = require('../node/Node');
-
-const KEYS = {
-  PATH: {
-    CHARACTER: '.',
-    MAGNITUDE: 0
-  },
-  WALL: {
-    CHARACTER: '#',
-    MAGNITUDE: 1
-  }
-};
+const defaultKeys = require('../keys.json');
 
 /** Class representing a two-dimensional plane comprised of nodes connected by vectors. */
 class VectorMap {
-  constructor(width, height, nodes) {
+  constructor(width, height, nodes = [], keys = defaultKeys) {
     this.width = width;
     this.height = height;
     this.nodes = nodes;
+    this.keys = keys;
   }
 
   /**
    * A prototype method for creating a new VectorMap given an appropriate string representation.
    *
    * @param {string} str A string to convert to a vector map.
-   * @returns {VectorMap}
+   * @example
+   * str = "◻︎◻︎◻︎◼︎◼︎◼︎◼︎\n◻︎◻︎◻︎◘◻︎◻︎◼︎\n◼︎◻︎◻︎◼︎◻︎◻︎◼︎\n◼︎◻︎◻︎◼︎◻︎◻︎◻︎\n◼︎◼︎◼︎◼︎◻︎◻︎◻︎";
+   * @returns {VectorMap} A new VectorMap.
    */
   static convertStringToVectorMap(str) {
     const arrayRepresentation = _.map(_.split(str, '\n'), (row) => _.split(row, ''));
@@ -37,38 +30,69 @@ class VectorMap {
    * representation.
    *
    * @param {string[][]} arr An array of arrays of strings to convert to a vector map.
-   * @returns {VectorMap}
+   * @example
+   * arr = [
+   *  ['◻︎', '◻︎', '◻︎', '◼︎', '◼︎', '◼︎', '◼︎'],
+   *  ['◻︎', '◻︎', '◻︎', '◘', '◻︎', '◻︎', '◼︎'],
+   *  ['◼︎', '◻︎', '◻︎', '◼︎', '◻︎', '◻︎', '◼︎'],
+   *  ['◼︎', '◻︎', '◻︎', '◼︎', '◻︎', '◻︎', '◻︎'],
+   *  ['◼︎', '◼︎', '◼︎', '◼︎', '◻︎', '◻︎', '◻︎']
+   * ];
+   * @returns {VectorMap} A new VectorMap.
    */
   static convertTwoDimensionalArrayToVectorMap(arr) {
     const height = arr.length;
     const width = arr[0].length;
 
     if (!_.every(arr, (row) => row.length === width)) {
-      throw new Error('Pathfinder: cannot convert arrays with nonstandard length');
+      throw new Error('VectorMap: cannot convert arrays with non-standard length');
     }
 
-    const nodes = [];
+    const vectorMap = new VectorMap(width, height);
 
-    for (let i = 0; i < height; i += 1) {
-      for (let j = 0; j < width; j += 1) {
-        const key = arr[i][j];
-        const node = new Node(i, j, key);
+    _.times(height, (heightIndex) => {
+      _.times(width, (widthIndex) => {
+        const key = arr[heightIndex][widthIndex];
 
-        if (key === KEYS.PATH.CHARACTER) {
-          if (j && _.last(nodes).key === KEYS.PATH.CHARACTER) {
-            node.addBidirectionalVector(_.last(nodes), KEYS.PATH.MAGNITUDE);
+        if (!_.has(vectorMap, `keys[${key}]`)) {
+          throw new Error(
+            `VectorMap: attempted to parse unknown key: [${key}] at (${heightIndex}, ${widthIndex})`
+          );
+        }
+
+        const node = new Node(heightIndex, widthIndex, key);
+        if (widthIndex) {
+          const prevNode = _.last(vectorMap.nodes);
+          // Link this Node to the previous Node with magnitude.
+          if (vectorMap.isTraversable(key, prevNode.key)) {
+            node.createDirectedVector(prevNode, vectorMap.keys[prevNode.key].magnitude);
           }
 
-          if (i && nodes[((i - 1) * width) + j].key === KEYS.PATH.CHARACTER) {
-            node.addBidirectionalVector(nodes[((i - 1) * width) + j], KEYS.PATH.MAGNITUDE);
+          // Link the previous Node to this Node with magnitude.
+          if (vectorMap.isTraversable(prevNode.key, key)) {
+            prevNode.createDirectedVector(node, vectorMap.keys[key].magnitude);
           }
         }
 
-        nodes.push(node);
-      }
-    }
+        const nodeAboveIndex = ((heightIndex - 1) * width) + widthIndex;
+        if (nodeAboveIndex >= 0) {
+          const nodeAbove = vectorMap.nodes[nodeAboveIndex];
+          // Link this Node to the above Node with magnitude.
+          if (vectorMap.isTraversable(key, nodeAbove.key)) {
+            node.createDirectedVector(nodeAbove, vectorMap.keys[nodeAbove.key].magnitude);
+          }
 
-    return new VectorMap(width, height, nodes);
+          // Link the above Node to this Node with magnitude.
+          if (vectorMap.isTraversable(nodeAbove.key, key)) {
+            nodeAbove.createDirectedVector(node, vectorMap.keys[key].magnitude);
+          }
+        }
+
+        vectorMap.nodes.push(node);
+      });
+    });
+
+    return vectorMap;
   }
 
   /**
@@ -81,14 +105,55 @@ class VectorMap {
    *
    * @param {number} x The x coordinate of the node.
    * @param {number} y The y coordinate of the node.
-   * @returns {Node}
+   * @returns {Node|undefined} The requested Node, or undefined.
    */
   findNode(x, y) {
     return this.nodes[(y * this.width) + x];
   }
+
+  /**
+   * Returns true if it is valid to traverse from the origin key to the destination key, otherwise
+   * returns false.
+   *
+   * @param {string} origin The character key to evaluate
+   * @param {string} destination The character key to evaluate
+   * @returns {boolean} True if traversable, false otherwise.
+   */
+  isTraversable(origin, destination) {
+    return _.includes(_.get(this.keys, `[${origin}].traversableKeys`, []), destination);
+  }
+
+  /**
+   * A helper method for creating an appropriate string representation of a VectorMap.
+   *
+   * Note: The reverse of {@link VectorMap#convertStringToVectorMap}.
+   * Warning: Vector data is not represented with this method.
+   *
+   * @returns {string} A string representation of a VectorMap.
+   */
+  get toString() {
+    return _.reduce(
+      this.nodes,
+      (acc, node, index) => {
+        const key = (index + 1) % this.width ? node.key : `${node.key}\n`;
+        return acc + key;
+      },
+      ''
+    );
+  }
+
+  /**
+   * A helper method for creating an appropriate two-dimensional array representation of a
+   * VectorMap.
+   *
+   * Note: The reverse of {@link VectorMap#convertTwoDimensionalArrayToVectorMap}.
+   * Warning: Vector data is not represented with this method.
+   *
+   * @returns {string} A string representation of a VectorMap.
+   */
+  get toTwoDimensionalArray() {
+    return _.map(_.split(this.asString, '\n'), (row) => _.split(row, ''));
+  }
 }
 
-module.exports = {
-  KEYS,
-  VectorMap
-};
+module.exports = VectorMap;

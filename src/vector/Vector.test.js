@@ -5,8 +5,8 @@ describe('Vector', () => {
   let destination, magnitude, origin, vector;
 
   beforeEach(() => {
-    origin = new Node(1, 2, '.');
-    destination = new Node(2, 2, '.');
+    origin = new Node(1, 2, '◻︎');
+    destination = new Node(2, 2, '◻︎');
     magnitude = 0.05;
     vector = new Vector(origin, destination, magnitude);
   });

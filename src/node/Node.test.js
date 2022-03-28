@@ -7,7 +7,7 @@ describe('Node', () => {
   beforeEach(() => {
     x = 3;
     y = 5;
-    key = '.';
+    key = '◻︎';
     node = new Node(x, y, key);
   });
 
@@ -19,7 +19,7 @@ describe('Node', () => {
     expect(node.vectors).toEqual([]);
   });
 
-  describe('addDirectedVector', () => {
+  describe('createDirectedVector', () => {
     let magnitude, otherNode;
 
     beforeEach(() => {
@@ -28,7 +28,7 @@ describe('Node', () => {
     });
 
     test('creates a directed vector to the passed node with the correct magnitude', () => {
-      node.addDirectedVector(otherNode, magnitude);
+      node.createDirectedVector(otherNode, magnitude);
 
       expect(node.vectors).toHaveLength(1);
       expect(node.vectors[0]).toBeInstanceOf(Vector);
@@ -38,7 +38,7 @@ describe('Node', () => {
     });
   });
 
-  describe('addBidirectionalVector', () => {
+  describe('createBidirectionalVector', () => {
     let magnitude, otherNode;
 
     beforeEach(() => {
@@ -47,7 +47,7 @@ describe('Node', () => {
     });
 
     test('creates a directed vector to the passed node with the correct magnitude', () => {
-      node.addBidirectionalVector(otherNode, magnitude);
+      node.createBidirectionalVector(otherNode, magnitude);
 
       expect(node.vectors).toHaveLength(1);
       expect(node.vectors[0]).toBeInstanceOf(Vector);
@@ -59,7 +59,7 @@ describe('Node', () => {
     test('creates a directed vector from the passed node with the correct magnitude', () => {
       expect(otherNode.vectors).toHaveLength(0);
 
-      node.addBidirectionalVector(otherNode, magnitude);
+      node.createBidirectionalVector(otherNode, magnitude);
 
       expect(otherNode.vectors).toHaveLength(1);
       expect(otherNode.vectors[0]).toBeInstanceOf(Vector);
