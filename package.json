@@ -8,7 +8,7 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jsdoc": "^38.1.0",
+    "eslint-plugin-jsdoc": "^38.1.3",
     "jest": "^26.6.3",
     "jsdoc": "^3.6.10",
     "webpack": "^5.70.0",
@@ -16,7 +16,8 @@
   },
   "scripts": {
     "build": "webpack",
-    "lint": "eslint ./ --ignore-path .gitignore && cspell 'src/**/*.js' --no-progress",
+    "lint": "npm run lint:js && cspell 'src/**/*.js' --no-progress",
+    "lint:js": "eslint --ext .js",
     "start": "node src/index",
     "test": "jest"
   },

@@ -20,9 +20,9 @@ class VectorMap {
    * str = "◻︎◻︎◻︎◼︎◼︎◼︎◼︎\n◻︎◻︎◻︎◘◻︎◻︎◼︎\n◼︎◻︎◻︎◼︎◻︎◻︎◼︎\n◼︎◻︎◻︎◼︎◻︎◻︎◻︎\n◼︎◼︎◼︎◼︎◻︎◻︎◻︎";
    * @returns {VectorMap} A new VectorMap.
    */
-  static convertStringToVectorMap(str) {
+  static stringToVectorMap(str) {
     const arrayRepresentation = _.map(_.split(str, '\n'), (row) => _.split(row, ''));
-    return VectorMap.convertTwoDimensionalArrayToVectorMap(arrayRepresentation);
+    return VectorMap.twoDimensionalArrayToVectorMap(arrayRepresentation);
   }
 
   /**
@@ -40,7 +40,7 @@ class VectorMap {
    * ];
    * @returns {VectorMap} A new VectorMap.
    */
-  static convertTwoDimensionalArrayToVectorMap(arr) {
+  static twoDimensionalArrayToVectorMap(arr) {
     const height = arr.length;
     const width = arr[0].length;
 
@@ -108,7 +108,7 @@ class VectorMap {
    * @returns {Node|undefined} The requested Node, or undefined.
    */
   findNode(x, y) {
-    return this.nodes[(y * this.width) + x];
+    return this.nodes[(x * this.width) + y];
   }
 
   /**
@@ -126,33 +126,26 @@ class VectorMap {
   /**
    * A helper method for creating an appropriate string representation of a VectorMap.
    *
-   * Note: The reverse of {@link VectorMap#convertStringToVectorMap}.
+   * Note: The reverse of {@link VectorMap#stringToVectorMap}.
    * Warning: Vector data is not represented with this method.
    *
    * @returns {string} A string representation of a VectorMap.
    */
   get toString() {
-    return _.reduce(
-      this.nodes,
-      (acc, node, index) => {
-        const key = (index + 1) % this.width ? node.key : `${node.key}\n`;
-        return acc + key;
-      },
-      ''
-    );
+    return _.join(_.map(this.toTwoDimensionalArray, (arr) => _.join(arr, '')), '\n');
   }
 
   /**
    * A helper method for creating an appropriate two-dimensional array representation of a
    * VectorMap.
    *
-   * Note: The reverse of {@link VectorMap#convertTwoDimensionalArrayToVectorMap}.
+   * Note: The reverse of {@link VectorMap#twoDimensionalArrayToVectorMap}.
    * Warning: Vector data is not represented with this method.
    *
-   * @returns {string} A string representation of a VectorMap.
+   * @returns {string[][]} An array of arrays of strings representation of a VectorMap.
    */
   get toTwoDimensionalArray() {
-    return _.map(_.split(this.asString, '\n'), (row) => _.split(row, ''));
+    return _.chunk(_.map(this.nodes, 'key'), this.width);
   }
 }
 
