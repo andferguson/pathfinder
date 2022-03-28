@@ -1,0 +1,13 @@
+// cSpell Settings
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "pathfind",
+    "pathfinder",
+    "pathfinding"
+  ],
+  "flagWords": [
+    "hte"
+  ]
+}

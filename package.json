@@ -1,34 +1,39 @@
 {
   "version": "0.0.1",
   "dependencies": {
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "eslint": "^7.16.0",
+    "cspell": "^5.19.3",
+    "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsdoc": "^38.1.0",
     "jest": "^26.6.3",
-    "jsdoc": "^3.6.6",
-    "webpack": "^5.11.0",
-    "webpack-cli": "^4.2.0"
+    "jsdoc": "^3.6.10",
+    "webpack": "^5.70.0",
+    "webpack-cli": "^4.9.2"
   },
   "scripts": {
     "build": "webpack",
-    "lint": "eslint ./ --ignore-path .gitignore",
+    "lint": "eslint ./ --ignore-path .gitignore && cspell 'src/**/*.js' --no-progress",
     "start": "node src/index",
     "test": "jest"
   },
   "author": "Andrew Ferguson",
   "license": "MIT",
-  "jest": {
-    "verbose": true,
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
-  }
+  "name": "@fergee32/pathfinder",
+  "description": "This project contains pathfinding algorithms optimized for two-dimensional map traversal.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andferguson/pathfinder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/andferguson/pathfinder/issues"
+  },
+  "homepage": "https://github.com/andferguson/pathfinder#readme"
 }

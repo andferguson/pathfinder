@@ -4,13 +4,17 @@
     "es2021": true,
     "jest": true
   },
-  "extends": ["airbnb-base"],
+  "extends": [
+    "airbnb-base",
+    "plugin:jsdoc/recommended"
+  ],
   "parserOptions": {
     "ecmaVersion": 12,
     "sourceType": "module"
   },
   "rules": {
     "comma-dangle": ["error", "never"],
+    "no-underscore-dangle": 0,
     "one-var": ["error", { "initialized": "never" }],
     "one-var-declaration-per-line": ["error", "initializations"],
     "space-before-blocks": "error"
