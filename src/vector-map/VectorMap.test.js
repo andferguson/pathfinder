@@ -1,7 +1,8 @@
 const _ = require('lodash');
 
-const Node = require('../node/Node');
 const keys = require('../keys.json');
+const Node = require('../node/Node');
+const Vector = require('../vector/Vector');
 const VectorMap = require('./VectorMap');
 
 describe('VectorMap', () => {
@@ -194,27 +195,120 @@ describe('VectorMap', () => {
     });
   });
 
-  describe('toString', () => {
-    test('converts the VectorMap to a string', () => {
-      const expectedString = '◼︎◻︎';
-      vectorMap = VectorMap.stringToVectorMap(expectedString);
-      expect(vectorMap.toString).toBe(expectedString);
+  describe.only('printTraversal', () => {
+    /**
+     * ◻︎◻︎◘◼︎◼︎◼︎◼︎
+     * ◻︎◻︎◻︎◘◻︎◻︎◘
+     * ◼︎◼︎◻︎◼︎◻︎◻︎◼︎
+     * ◼︎◻︎◻︎◼︎◘◻︎◼︎
+     * ◻︎◻︎◻︎◼︎◘◻︎◼︎
+     * ◼︎◘◻︎◘◻︎◻︎◻︎
+     * ◼︎◼︎◼︎◼︎◻︎◻︎◻︎
+     */
+    const array = [
+      ['◻︎', '◻︎', '◘', '◼︎', '◼︎', '◼︎', '◼︎'],
+      ['◻︎', '◻︎', '◻︎', '◘', '◻︎', '◻︎', '◘'],
+      ['◼︎', '◼︎', '◻︎', '◼︎', '◻︎', '◻︎', '◼︎'],
+      ['◼︎', '◻︎', '◻︎', '◼︎', '◘', '◻︎', '◼︎'],
+      ['◻︎', '◻︎', '◻︎', '◼︎', '◘', '◻︎', '◼︎'],
+      ['◼︎', '◘', '◻︎', '◘', '◻︎', '◻︎', '◻︎'],
+      ['◼︎', '◼︎', '◼︎', '◼︎', '◻︎', '◻︎', '◻︎']
+    ];
+
+    ['◻︎', '◻︎', '◘', '◼︎', '◼︎', '◼︎', '◼︎'],
+    ['◻︎', '◻︎', '✪', '→', '↘︎', '◻︎', '◘'],
+    ['◼︎', '↗︎', '◻︎', '◼︎', '◻︎', '↓', '◼︎'],
+    ['◼︎', '↑', '◻', '◼︎', '◘', '↙︎', '◼︎'],
+    ['◻︎', '◻︎', '↖︎', '←', '←', '◻︎', '◼︎'],
+    ['◼︎', '◘', '◻︎', '◘', '◻︎', '◻︎', '◻︎'],
+    ['◼︎', '◼︎', '◼︎', '◼︎', '◻︎', '◻︎', '◻︎']
+
+    const vectorMap = VectorMap.twoDimensionalArrayToVectorMap(array);
+
+    test('returns a unmodified VectorMap print when the path is empty', () => {
+      expect(vectorMap.printTraversal(undefined)).toMatchSnapshot();
+      expect(vectorMap.printTraversal(null)).toMatchSnapshot();
+      expect(vectorMap.printTraversal([])).toMatchSnapshot();
     });
 
-    test('converts the vertical VectorMap to a string', () => {
-      const expectedString = '◼︎\n◻︎';
-      vectorMap = VectorMap.stringToVectorMap(expectedString);
-      expect(vectorMap.toString).toBe(expectedString);
+    test('throws an error for invalid paths', () => {
+      expect(vectorMap.printTraversal([
+        new Vector(new Node(-1, 0), vectorMap.findNode(0, 0), 1)
+      ])).toThrowError('VectorMap: unknown path for traversal');
+
+      expect(vectorMap.printTraversal([
+        new Vector(vectorMap.findNode(3, 1), vectorMap.findNode(4, 1), 1),
+        new Vector(vectorMap.findNode(4, 1), vectorMap.findNode(5, 1), 1),
+        new Vector(vectorMap.findNode(5, 1), vectorMap.findNode(5, 2), 1),
+        new Vector(vectorMap.findNode(5, 2), vectorMap.findNode(5, 3), 1),
+        new Vector(vectorMap.findNode(5, 3), vectorMap.findNode(4, 3), 1),
+        new Vector(vectorMap.findNode(4, 3), new Node(10, 2), 1)
+      ])).toThrowError('VectorMap: unknown path for traversal');
     });
 
-    test('converts the large VectorMap to a string', () => {
-      const expectedString = '◼︎◻︎\n◼︎◼︎\n◘◻︎';
-      vectorMap = VectorMap.stringToVectorMap(expectedString);
-      expect(vectorMap.toString).toBe(expectedString);
+    test('returns a modified VectorMap print with the path traversal', () => {
+      expect(vectorMap.printTraversal([
+        new Vector(vectorMap.findNode(3, 1), vectorMap.findNode(4, 1), 1),
+        new Vector(vectorMap.findNode(4, 1), vectorMap.findNode(5, 2), 1),
+        new Vector(vectorMap.findNode(5, 2), vectorMap.findNode(5, 3), 1),
+        new Vector(vectorMap.findNode(5, 3), vectorMap.findNode(4, 4), 1),
+        new Vector(vectorMap.findNode(4, 4), vectorMap.findNode(3, 4), 1),
+        new Vector(vectorMap.findNode(3, 4), vectorMap.findNode(2, 4), 1),
+        new Vector(vectorMap.findNode(2, 4), vectorMap.findNode(1, 3), 1),
+        new Vector(vectorMap.findNode(1, 3), vectorMap.findNode(1, 2), 1),
+        new Vector(vectorMap.findNode(1, 2), vectorMap.findNode(2, 1), 1)
+      ])).toMatchSnapshot();
     });
   });
 
-  describe('toTwoDimensionalArray', () => {
+  describe('logTraversal', () => {
+    /**
+     * ◻︎◼︎◻︎
+     * ◻︎◻︎◻︎
+     * ◻︎◻︎◻︎
+     */
+    const vectorMapString = '◻︎◼︎◻︎\n◻︎◻︎◻︎\n◻︎◻︎◻︎';
+    const vectorMap = VectorMap.stringToVectorMap(vectorMapString);
+
+    /**
+     * ↓◼︎◻︎
+     * →✪◻︎
+     * ◻︎◻︎◻︎
+     */
+    const vectorString = '[origin] -[1]-> [destination]';
+    const path = [
+      new Vector(vectorMap.findNode(0, 0), vectorMap.findNode(0, 1), 1),
+      new Vector(vectorMap.findNode(0, 1), vectorMap.findNode(1, 1), 1)
+    ];
+
+    const traversalString = '↓◼︎◻︎\n→✪◻︎\n◻︎◻︎◻︎';
+
+    beforeEach(() => {
+      _.each(path, (vector) => {
+        jest.spyOn(vector, 'print', 'get').mockReturnValue(vectorString);
+      })
+      jest.spyOn(vectorMap, 'print', 'get').mockReturnValue(vectorMapString);
+      jest.spyOn(vectorMap, 'printTraversal').mockReturnValue(traversalString);
+      jest.spyOn(console, 'log').mockImplementation();
+    });
+
+    test('logs a printable sting representing the vector map', () => {
+      expect(vectorMap.logTraversal(path)).toBeUndefined();
+      expect(console.log).toBeCalledWith(vectorMapString);
+    });
+
+    test('logs a printable sting representing the path', () => {
+      expect(vectorMap.logTraversal(path)).toBeUndefined();
+      expect(console.log).toBeCalledWith(`Path: [\n\t${vectorString}\n\t${vectorString}\n]`);
+    });
+
+    test('logs a printable sting representing the path traversal on the vector map', () => {
+      expect(vectorMap.logTraversal(path)).toBeUndefined();
+      expect(console.log).toBeCalledWith(traversalString);
+    });
+  });
+
+  describe('get toTwoDimensionalArray', () => {
     test('converts the VectorMap to a two dimensional array', () => {
       vectorMap = VectorMap.stringToVectorMap('◼︎◻︎');
       expect(vectorMap.toTwoDimensionalArray).toEqual([['◼︎', '◻︎']]);
@@ -228,6 +322,38 @@ describe('VectorMap', () => {
     test('converts the large VectorMap to a two dimensional array', () => {
       vectorMap = VectorMap.stringToVectorMap('◼︎◻︎\n◼︎◼︎\n◘◻︎');
       expect(vectorMap.toTwoDimensionalArray).toEqual([['◼︎', '◻︎'], ['◼︎', '◼︎'], ['◘', '◻︎']]);
+    });
+  });
+
+  describe('get print', () => {
+    test('converts the VectorMap to a string', () => {
+      const expectedString = '◼︎◻︎';
+      vectorMap = VectorMap.stringToVectorMap(expectedString);
+      expect(vectorMap.print).toBe(expectedString);
+    });
+
+    test('converts the vertical vector map to a string', () => {
+      const expectedString = '◼︎\n◻︎';
+      vectorMap = VectorMap.stringToVectorMap(expectedString);
+      expect(vectorMap.print).toBe(expectedString);
+    });
+
+    test('converts the large VectorMap to a string', () => {
+      const expectedString = '◼︎◻︎\n◼︎◼︎\n◘◻︎';
+      vectorMap = VectorMap.stringToVectorMap(expectedString);
+      expect(vectorMap.print).toBe(expectedString);
+    });
+  });
+
+  describe('get log', () => {
+    test('console logs a printable sting representing the vector map', () => {
+      const vectorMapString = '◻◻︎◻︎◼︎◼︎◼︎◼︎\n◻︎◻︎◻︎◘◻︎◻︎◼︎\n◼︎◻︎◻︎◼︎◻︎◻︎◼︎\n◼︎◻︎◻︎◼︎◻︎◻︎◻︎\n◼︎◼︎◼︎◼︎◻︎◻︎◻︎';
+
+      jest.spyOn(vectorMap, 'print', 'get').mockReturnValue(vectorMapString);
+      jest.spyOn(console, 'log').mockImplementation();
+
+      expect(vectorMap.log).toBeUndefined();
+      expect(console.log).toBeCalledWith(vectorMapString);
     });
   });
 });

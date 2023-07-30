@@ -17,4 +17,28 @@ describe('Vector', () => {
     expect(vector.destination).toBe(destination);
     expect(vector.magnitude).toBe(magnitude);
   });
+
+  describe('get print', () => {
+    test('returns a printable sting representing the vector', () => {
+      const originString = '[origin]';
+      const destinationString = '[destination]';
+
+      jest.spyOn(origin, 'print', 'get').mockReturnValue(originString)
+      jest.spyOn(destination, 'print', 'get').mockReturnValue(destinationString)
+
+      expect(vector.print).toBe(`${originString} -[${magnitude}]-> ${destinationString}`);
+    });
+  });
+
+  describe('get log', () => {
+    test('console logs a printable sting representing the vector', () => {
+      const vectorString = '[origin] -[1]-> [destination]';
+
+      jest.spyOn(vector, 'print', 'get').mockReturnValue(vectorString);
+      jest.spyOn(console, 'log').mockImplementation();
+
+      expect(vector.log).toBeUndefined();
+      expect(console.log).toBeCalledWith(vectorString);
+    });
+  });
 });
