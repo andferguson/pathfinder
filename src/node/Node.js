@@ -2,20 +2,16 @@ const Vector = require('../vector/Vector');
 
 /**
  * Class representing a point.
+ * 
+ * @class
  */
 class Node {
   constructor(x, y, key) {
-    // The x coordinate of this Node within a two-dimensional plane representation
-    this.x = x;
+    this.x = x;         // The x coordinate of this Node within a two-dimensional plane
+    this.y = y;         // The y coordinate of this Node within a two-dimensional plane
+    this.key = key;     // The display character of this Node
 
-    // The y coordinate of this Node within a two-dimensional plane representation
-    this.y = y;
-
-    // The display character of this Node
-    this.key = key;
-
-    // A Vector[] representing all Vectors connecting this Node to others
-    this.vectors = [];
+    this.vectors = [];  // A Vector[] representing all Vectors connecting this Node to others
   }
 
   /**
@@ -45,6 +41,18 @@ class Node {
     this.createDirectedVector(node, magnitude);
     node.createDirectedVector(this, magnitude);
   }
+
+  /**
+   * Returns a string representation of the Node on which this is called.
+   *
+   * @returns {string} A string representation of this Node.
+   */
+  get print() { return `[${this.key}]{${this.x}, ${this.y}}`; }
+
+  /**
+   * Console logs the string representation of the Node on which this is called.
+   */
+  get log() { console.log(this.print); }
 }
 
 module.exports = Node;

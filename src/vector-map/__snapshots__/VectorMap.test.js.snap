@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`VectorMap printTraversal returns a modified VectorMap print with the path traversal 1`] = `
+"◻︎◻︎◘◼︎◼︎◼︎◼︎
+◻︎◻︎✪→↘︎◻︎◘
+◼︎↗︎◻︎◼︎◻︎↓◼︎
+◼︎↑◻︎◼︎◘↙︎◼︎
+◻︎◻︎↖︎←←◻︎◼︎
+◼︎◘◻︎◘◻︎◻︎◻︎
+◼︎◼︎◼︎◼︎◻︎◻︎◻︎"
+`;
+
+exports[`VectorMap printTraversal returns a unmodified VectorMap print when the path is empty 1`] = `
+"◻︎◻︎◘◼︎◼︎◼︎◼︎
+◻︎◻︎◻︎◘◻︎◻︎◘
+◼︎◼︎◻︎◼︎◻︎◻︎◼︎
+◼︎◻︎◻︎◼︎◘◻︎◼︎
+◻︎◻︎◻︎◼︎◘◻︎◼︎
+◼︎◘◻︎◘◻︎◻︎◻︎
+◼︎◼︎◼︎◼︎◻︎◻︎◻︎"
+`;
+
+exports[`VectorMap printTraversal returns a unmodified VectorMap print when the path is empty 2`] = `
+"◻︎◻︎◘◼︎◼︎◼︎◼︎
+◻︎◻︎◻︎◘◻︎◻︎◘
+◼︎◼︎◻︎◼︎◻︎◻︎◼︎
+◼︎◻︎◻︎◼︎◘◻︎◼︎
+◻︎◻︎◻︎◼︎◘◻︎◼︎
+◼︎◘◻︎◘◻︎◻︎◻︎
+◼︎◼︎◼︎◼︎◻︎◻︎◻︎"
+`;
+
+exports[`VectorMap printTraversal returns a unmodified VectorMap print when the path is empty 3`] = `
+"◻︎◻︎◘◼︎◼︎◼︎◼︎
+◻︎◻︎◻︎◘◻︎◻︎◘
+◼︎◼︎◻︎◼︎◻︎◻︎◼︎
+◼︎◻︎◻︎◼︎◘◻︎◼︎
+◻︎◻︎◻︎◼︎◘◻︎◼︎
+◼︎◘◻︎◘◻︎◻︎◻︎
+◼︎◼︎◼︎◼︎◻︎◻︎◻︎"
+`;

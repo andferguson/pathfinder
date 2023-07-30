@@ -1,9 +1,14 @@
 const _ = require('lodash');
 
-const Node = require('../node/Node');
 const defaultKeys = require('../keys.json');
+const Node = require('../node/Node');
+const Vector = require('../vector/Vector');
 
-/** Class representing a two-dimensional plane comprised of nodes connected by vectors. */
+/**
+ * Class representing a two-dimensional plane comprised of nodes connected by vectors.
+ * 
+ * @class
+ */
 class VectorMap {
   constructor(width, height, nodes = [], keys = defaultKeys) {
     this.width = width;
@@ -15,6 +20,7 @@ class VectorMap {
   /**
    * A prototype method for creating a new VectorMap given an appropriate string representation.
    *
+   * @static
    * @param {string} str A string to convert to a vector map.
    * @example
    * str = "◻︎◻︎◻︎◼︎◼︎◼︎◼︎\n◻︎◻︎◻︎◘◻︎◻︎◼︎\n◼︎◻︎◻︎◼︎◻︎◻︎◼︎\n◼︎◻︎◻︎◼︎◻︎◻︎◻︎\n◼︎◼︎◼︎◼︎◻︎◻︎◻︎";
@@ -29,6 +35,7 @@ class VectorMap {
    * A prototype method for creating a new VectorMap given an appropriate two-dimensional
    * representation.
    *
+   * @static
    * @param {string[][]} arr An array of arrays of strings to convert to a vector map.
    * @example
    * arr = [
@@ -60,7 +67,7 @@ class VectorMap {
           );
         }
 
-        const node = new Node(heightIndex, widthIndex, key);
+        const node = new Node(widthIndex, heightIndex, key);
         if (widthIndex) {
           const prevNode = _.last(vectorMap.nodes);
           // Link this Node to the previous Node with magnitude.
@@ -108,15 +115,15 @@ class VectorMap {
    * @returns {Node|undefined} The requested Node, or undefined.
    */
   findNode(x, y) {
-    return this.nodes[(x * this.width) + y];
+    return this.nodes[(y * this.width) + x];
   }
 
   /**
    * Returns true if it is valid to traverse from the origin key to the destination key, otherwise
    * returns false.
    *
-   * @param {string} origin The character key to evaluate
-   * @param {string} destination The character key to evaluate
+   * @param {string} origin The character key to evaluate.
+   * @param {string} destination The character key to evaluate.
    * @returns {boolean} True if traversable, false otherwise.
    */
   isTraversable(origin, destination) {
@@ -124,15 +131,62 @@ class VectorMap {
   }
 
   /**
-   * A helper method for creating an appropriate string representation of a VectorMap.
+   * Returns a string representation of a path overlayed on the VectorMap on which this is called.
    *
-   * Note: The reverse of {@link VectorMap#stringToVectorMap}.
-   * Warning: Vector data is not represented with this method.
-   *
-   * @returns {string} A string representation of a VectorMap.
+   * @param {Vector[]} path 
+   * @returns {string} A string representation of a path overlayed on this VectorMap.
    */
-  get toString() {
-    return _.join(_.map(this.toTwoDimensionalArray, (arr) => _.join(arr, '')), '\n');
+  printTraversal(path) {
+    const safeClone = _.cloneDeep(this);
+
+    if (!_.isEmpty(path)) {
+      _.each(path, ({ origin: { x: x1, y: y1 }, destination: { x: x2, y: y2 } }) => {
+        const current = safeClone.findNode(x1, y1);
+        const next = safeClone.findNode(x2, y2);
+
+        if (_.isNil(current) || _.isNil(next)) {
+          throw new Error('VectorMap: unknown path for traversal');
+        }
+  
+        switch(Math.sign(x1 - x2)) {
+          case -1:
+            switch(Math.sign(y1 - y2)) {
+              case -1: current.key = '↘︎'; break;
+              case 1: current.key = '↗︎'; break;
+              case 0: current.key = '→'; break;
+            } break;
+          case 1:
+            switch(Math.sign(y1 - y2)) {
+              case -1: current.key = '↙︎'; break;
+              case 1: current.key = '↖︎'; break;
+              case 0: current.key = '←'; break;
+            } break;
+          case 0:
+            switch(Math.sign(y1 - y2)) {
+              case -1: current.key = '↓'; break;
+              case 1: current.key = '↑'; break;
+              case 0: current.key = '✪'; break;
+            } break;
+        }
+      });
+  
+      const {x, y} = _.last(path).destination;
+      safeClone.findNode(x, y).key = '✪';
+    }
+
+    return safeClone.print
+  }
+
+  /**
+   * Console logs a string representation of a path overlayed on the VectorMap on which this is
+   * called.
+   *
+   * @param {Vector[]} path 
+   */
+  logTraversal(path) {
+    this.log
+    console.log(`Path: [\n\t${_.map(path, 'print').join('\n\t')}\n]`);
+    console.log(this.printTraversal(path));
   }
 
   /**
@@ -147,6 +201,21 @@ class VectorMap {
   get toTwoDimensionalArray() {
     return _.chunk(_.map(this.nodes, 'key'), this.width);
   }
+
+  /**
+   * Returns a string representation of the VectorMap on which this is called.
+   * 
+   * Note: The reverse of {@link VectorMap#stringToVectorMap}.
+   * Warning: Vector data is not represented with this method.
+   *
+   * @returns {string} A string representation of this VectorMap.
+   */
+  get print() { return _.join(_.map(this.toTwoDimensionalArray, (arr) => _.join(arr, '')), '\n'); }
+
+  /**
+   * Console logs the string representation of the VectorMap on which this is called.
+   */
+  get log() { console.log(this.print); }
 }
 
 module.exports = VectorMap;
