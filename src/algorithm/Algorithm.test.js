@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 const Node = require('../node/Node');
 const Vector = require('../vector/Vector');
 
@@ -30,7 +28,7 @@ describe('Algorithm', () => {
           .toThrowError('Algorithm: destination node must be defined');
       });
 
-      test('instanciates a new Algorithm with destination and calls findPath with origin', () => {
+      test('uses a new instance of Algorithm and calls findPath on it', () => {
         expect(() => { Algorithm.findPath(origin, destination); })
           .toThrowError('Algorithm: findPath method must be implemented in a sub-class');
       });

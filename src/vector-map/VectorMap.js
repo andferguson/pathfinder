@@ -131,10 +131,10 @@ class VectorMap {
   }
 
   /**
-   * Returns a string representation of a path overlayed on the VectorMap on which this is called.
+   * Returns a string representation of a path overlaid on the VectorMap on which this is called.
    *
    * @param {Vector[]} path 
-   * @returns {string} A string representation of a path overlayed on this VectorMap.
+   * @returns {string} A string representation of a path overlaid on this VectorMap.
    */
   printTraversal(path) {
     const safeClone = _.cloneDeep(this);
@@ -178,7 +178,7 @@ class VectorMap {
   }
 
   /**
-   * Console logs a string representation of a path overlayed on the VectorMap on which this is
+   * Console logs a string representation of a path overlaid on the VectorMap on which this is
    * called.
    *
    * @param {Vector[]} path 

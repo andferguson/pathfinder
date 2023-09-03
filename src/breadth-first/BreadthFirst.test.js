@@ -1,9 +1,7 @@
-const _ = require('lodash');
-
+const Algorithm = require('../algorithm/Algorithm');
 const Vector = require('../vector/Vector');
 const VectorMap = require('../vector-map/VectorMap');
 
-const Algorithm = require('./Algorithm');
 const BreadthFirst = require('./BreadthFirst');
 
 describe('BreadthFirst', () => {

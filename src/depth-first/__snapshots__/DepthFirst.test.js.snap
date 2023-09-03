@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DepthFirst static findPath returns an array of directed vectors - hard 1`] = `
+"↓◻︎◘◼︎◼︎◼︎◼︎
+→→↓◘◻︎◻︎◘
+◼︎◼︎↓◼︎◻︎◻︎◼︎
+◼︎◻︎↓◼︎◘◻︎◼︎
+◻︎◻︎↓◼︎◘◻︎◼︎
+◼︎◘→→↓◻︎◻︎
+◼︎◼︎◼︎◼︎→→✪"
+`;
+
+exports[`DepthFirst static findPath returns an array of directed vectors - hard 2`] = `
+"✪↓←↓←←←
+↑←↑↓◻︎→↑
+◼︎◼︎↑↓◻︎↑◼︎
+◼︎◻︎↑↓◘↑◼︎
+◻︎◻︎↑↓→↑◼︎
+◼︎→↑↓↑↓←
+◼︎↑←←↑←↑"
+`;
+
+exports[`DepthFirst static findPath returns an array of directed vectors - hard 3`] = `
+"◻︎◻︎◘◼︎◼︎◼︎✪
+◻︎◻︎◻︎◘◻︎→↑
+◼︎◼︎◻︎◼︎◻︎↑◼︎
+◼︎◻︎◻︎◼︎◘↑◼︎
+◻︎◻︎◻︎◼︎◘↑◼︎
+◼︎◘◻︎→↓↑←
+→→→↑→→↑"
+`;
+
+exports[`DepthFirst static findPath returns an array of directed vectors - hard 4`] = `
+"◻︎◻︎◘◼︎◼︎◼︎↓
+◻︎◻︎◻︎↓←↓←
+◼︎◼︎◻︎↓↑↓◼︎
+◼︎◻︎◻︎↓↑↓◼︎
+◻︎◻︎◻︎↓↑↓◼︎
+↓←◻︎↓↑↓◻︎
+✪↑←←↑←◻︎"
+`;
+
+exports[`DepthFirst static findPath returns an array of directed vectors - medium 1`] = `
+"↓◻︎◻︎◼︎◻︎
+→↓◻︎◻︎◻︎
+◼︎↓→→↓
+◼︎→↑◼︎↓
+◼︎◼︎◼︎◼︎✪"
+`;
+
+exports[`DepthFirst static findPath returns an array of directed vectors - medium 2`] = `
+"✪←←◼︎◻︎
+◻︎→↑↓←
+◼︎↑↓←↑
+◼︎↑←◼︎↑
+◼︎◼︎◼︎◼︎↑"
+`;
+
+exports[`DepthFirst static findPath returns an array of directed vectors - medium 3`] = `
+"◻︎◻︎◻︎◼︎↓
+◻︎◻︎↓←↓
+◼︎◻︎↓↑←
+◼︎✪←◼︎◻︎
+◼︎◼︎◼︎◼︎◻︎"
+`;
+
+exports[`DepthFirst static findPath returns an array of directed vectors - medium 4`] = `
+"◻︎◻︎◻︎◼︎✪
+◻︎◻︎◻︎◻︎↑
+◼︎◻︎→→↑
+◼︎→↑◼︎◻︎
+◼︎◼︎◼︎◼︎◻︎"
+`;

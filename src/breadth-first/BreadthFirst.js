@@ -1,8 +1,8 @@
 const _ = require('lodash');
 
+const Algorithm = require('../algorithm/Algorithm');
 const Node = require('../node/Node');
 const Vector = require('../vector/Vector');
-const Algorithm = require('./Algorithm');
 
 /**
  * Class representing a breadth-first search pathfinding algorithm. Utilizes an internal queue to
