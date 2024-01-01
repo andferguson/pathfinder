@@ -7,7 +7,7 @@ describe('Node', () => {
   beforeEach(() => {
     x = 3;
     y = 5;
-    key = '◻︎';
+    key = '🟩';
     node = new Node(x, y, key);
   });
 
@@ -77,7 +77,7 @@ describe('Node', () => {
 
   describe('get log', () => {
     test('console logs a printable sting representing the node', () => {
-      const nodeString = '[◻︎](3, 5)';
+      const nodeString = '[🟩](3, 5)';
 
       jest.spyOn(node, 'print', 'get').mockReturnValue(nodeString);
       jest.spyOn(console, 'log').mockImplementation();

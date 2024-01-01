@@ -1,0 +1,27 @@
+grass (⾋)
+road (🟩)
+trees (🌲)
+mountains (⛰️)
+river (♌︎)
+shore (∼)
+water (≈)
+reef (≉)
+
+headquarters (♜)
+city (🂋)
+base (⚔)
+factory (⚙︎)
+dock (⚓︎)
+airport (✈︎)
+communications tower (⇑)
+
+wall (⬛️)
+breakable wall (🪜)
+
+cannon
+cannon (3x3)
+factory (3x3)
+silo
+silo (used)
+crystal
+crystal (3x3)

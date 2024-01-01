@@ -7,6 +7,8 @@ const Algorithm = require('../algorithm/Algorithm');
 /**
  * Class representing a depth-first search pathfinding algorithm. Utilizes an internal stack to
  * evaluate every Node a from deepest to shallowest.
+ * 
+ * @note This algorithm does not have any considerations for {@link Vector#magnitude}.
  *
  * @example
  *                  ┌─┐

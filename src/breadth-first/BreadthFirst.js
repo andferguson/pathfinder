@@ -7,6 +7,8 @@ const Vector = require('../vector/Vector');
 /**
  * Class representing a breadth-first search pathfinding algorithm. Utilizes an internal queue to
  * evaluate every Node a from shallowest to deepest.
+ * 
+ * @note This algorithm does not have any considerations for {@link Vector#magnitude}.
  *
  * @example
  *                  ┌─┐

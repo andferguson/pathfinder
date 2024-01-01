@@ -23,7 +23,7 @@ class VectorMap {
    * @static
    * @param {string} str A string to convert to a vector map.
    * @example
-   * str = "◻︎◻︎◻︎◼︎◼︎◼︎◼︎\n◻︎◻︎◻︎◘◻︎◻︎◼︎\n◼︎◻︎◻︎◼︎◻︎◻︎◼︎\n◼︎◻︎◻︎◼︎◻︎◻︎◻︎\n◼︎◼︎◼︎◼︎◻︎◻︎◻︎";
+   * str = "🟩🟩🟩⬛️⬛️⬛️⬛️\n🟩🟩🟩🪜🟩🟩⬛️\n⬛️🟩🟩⬛️🟩🟩⬛️\n⬛️🟩🟩⬛️🟩🟩🟩\n⬛️⬛️⬛️⬛️🟩🟩🟩";
    * @returns {VectorMap} A new VectorMap.
    */
   static stringToVectorMap(str) {
@@ -39,11 +39,11 @@ class VectorMap {
    * @param {string[][]} arr An array of arrays of strings to convert to a vector map.
    * @example
    * arr = [
-   *  ['◻︎', '◻︎', '◻︎', '◼︎', '◼︎', '◼︎', '◼︎'],
-   *  ['◻︎', '◻︎', '◻︎', '◘', '◻︎', '◻︎', '◼︎'],
-   *  ['◼︎', '◻︎', '◻︎', '◼︎', '◻︎', '◻︎', '◼︎'],
-   *  ['◼︎', '◻︎', '◻︎', '◼︎', '◻︎', '◻︎', '◻︎'],
-   *  ['◼︎', '◼︎', '◼︎', '◼︎', '◻︎', '◻︎', '◻︎']
+   *  ['🟩', '🟩', '🟩', '⬛️', '⬛️', '⬛️', '⬛️'],
+   *  ['🟩', '🟩', '🟩', '🪜', '🟩', '🟩', '⬛️'],
+   *  ['⬛️', '🟩', '🟩', '⬛️', '🟩', '🟩', '⬛️'],
+   *  ['⬛️', '🟩', '🟩', '⬛️', '🟩', '🟩', '🟩'],
+   *  ['⬛️', '⬛️', '⬛️', '⬛️', '🟩', '🟩', '🟩']
    * ];
    * @returns {VectorMap} A new VectorMap.
    */
@@ -151,27 +151,27 @@ class VectorMap {
         switch(Math.sign(x1 - x2)) {
           case -1:
             switch(Math.sign(y1 - y2)) {
-              case -1: current.key = '↘︎'; break;
-              case 1: current.key = '↗︎'; break;
-              case 0: current.key = '→'; break;
+              case -1: current.key = '↘️'; break;
+              case 1: current.key = '↗️'; break;
+              case 0: current.key = '➡️'; break;
             } break;
           case 1:
             switch(Math.sign(y1 - y2)) {
-              case -1: current.key = '↙︎'; break;
-              case 1: current.key = '↖︎'; break;
-              case 0: current.key = '←'; break;
+              case -1: current.key = '↙️'; break;
+              case 1: current.key = '↖️'; break;
+              case 0: current.key = '⬅️'; break;
             } break;
           case 0:
             switch(Math.sign(y1 - y2)) {
-              case -1: current.key = '↓'; break;
-              case 1: current.key = '↑'; break;
-              case 0: current.key = '✪'; break;
+              case -1: current.key = '⬇️'; break;
+              case 1: current.key = '⬆️'; break;
+              case 0: current.key = '*️⃣'; break;
             } break;
         }
       });
   
       const {x, y} = _.last(path).destination;
-      safeClone.findNode(x, y).key = '✪';
+      safeClone.findNode(x, y).key = '*️⃣';
     }
 
     return safeClone.print
