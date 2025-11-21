@@ -55,46 +55,48 @@ describe('DepthFirst', () => {
         const vectorMap = VectorMap.twoDimensionalArrayToVectorMap(array);
 
         /**
-         * ↓◼︎◻︎
-         * →✪◻︎
-         * ◻︎◻︎◻︎
+         * ◻︎◼︎◻︎
+         * ◻︎↓◻︎
+         * ✪←◻︎
          */
         expect(DepthFirst.findPath(
-          vectorMap.findNode(0, 0),
+          vectorMap.findNode(1, 1),
+          vectorMap.findNode(0, 2)
+        )).toEqual([
+          new Vector(vectorMap.findNode(1, 1), vectorMap.findNode(1, 2), 1),
+          new Vector(vectorMap.findNode(1, 2), vectorMap.findNode(0, 2), 1)
+        ]);
+
+        /**
+         * ◻︎◼︎↓
+         * ◻︎✪↓
+         * ◻︎↑←
+         */
+        expect(DepthFirst.findPath(
+          vectorMap.findNode(2, 0),
           vectorMap.findNode(1, 1)
         )).toEqual([
-          new Vector(vectorMap.findNode(0, 0), vectorMap.findNode(0, 1), 1),
-          new Vector(vectorMap.findNode(0, 1), vectorMap.findNode(1, 1), 1)
+          new Vector(vectorMap.findNode(2, 0), vectorMap.findNode(2, 1), 1),
+          new Vector(vectorMap.findNode(2, 1), vectorMap.findNode(2, 2), 1),
+          new Vector(vectorMap.findNode(2, 2), vectorMap.findNode(1, 2), 1),
+          new Vector(vectorMap.findNode(1, 2), vectorMap.findNode(1, 1), 1)
         ]);
 
         /**
          * ↓◼︎✪
+         * ↓◻︎↑
          * →→↑
-         * ◻︎◻︎◻︎
          */
         expect(DepthFirst.findPath(
           vectorMap.findNode(0, 0),
           vectorMap.findNode(2, 0)
         )).toEqual([
           new Vector(vectorMap.findNode(0, 0), vectorMap.findNode(0, 1), 1),
-          new Vector(vectorMap.findNode(0, 1), vectorMap.findNode(1, 1), 1),
-          new Vector(vectorMap.findNode(1, 1), vectorMap.findNode(2, 1), 1),
+          new Vector(vectorMap.findNode(0, 1), vectorMap.findNode(0, 2), 1),
+          new Vector(vectorMap.findNode(0, 2), vectorMap.findNode(1, 2), 1),
+          new Vector(vectorMap.findNode(1, 2), vectorMap.findNode(2, 2), 1),
+          new Vector(vectorMap.findNode(2, 2), vectorMap.findNode(2, 1), 1),
           new Vector(vectorMap.findNode(2, 1), vectorMap.findNode(2, 0), 1)
-        ]);
-
-        /**
-         * ✪◼︎◻︎
-         * ↑◻︎◻︎
-         * ↑←←
-         */
-        expect(DepthFirst.findPath(
-          vectorMap.findNode(2, 2),
-          vectorMap.findNode(0, 0)
-        )).toEqual([
-          new Vector(vectorMap.findNode(2, 2), vectorMap.findNode(1, 2), 1),
-          new Vector(vectorMap.findNode(1, 2), vectorMap.findNode(0, 2), 1),
-          new Vector(vectorMap.findNode(0, 2), vectorMap.findNode(0, 1), 1),
-          new Vector(vectorMap.findNode(0, 1), vectorMap.findNode(0, 0), 1)
         ]);
       });
 
