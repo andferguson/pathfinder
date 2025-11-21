@@ -7,9 +7,11 @@ const Vector = require('../vector/Vector');
 /**
  * Class representing a breadth-first search pathfinding algorithm. Utilizes an internal queue to
  * evaluate every Node a from shallowest to deepest.
- * 
- * @note This algorithm does not have any considerations for {@link Vector#magnitude}.
  *
+ * NOTE: This algorithm does not have any considerations for {@link Vector#magnitude}.
+ *
+ * @class
+ * @augments Algorithm
  * @example
  *                  ┌─┐
  *              ┌───┤A├───┐
@@ -26,16 +28,19 @@ const Vector = require('../vector/Vector');
  *   ┌▼┐  ┌▼┐  ┌▼┐  ┌▼┐  ┌▼┐  ┌▼┐  ┌▼┐
  *   │I│  │J│  │K│  │L│  │M│  │N│  │O│
  *   └─┘  └─┘  └─┘  └─┘  └─┘  └─┘  └─┘
- * @class
- * @augments Algorithm
  */
 class BreadthFirst extends Algorithm {
+  /**
+   * Constructor for the BreadthFirst class.
+   *
+   * @param {Node} destination The destination Node to search for.
+   */
   constructor(destination) {
     super(destination);
     // A collection of in-use data, used for recursive implementations.
     this.cache = {
       queue: [],
-      history: [],
+      history: []
     };
   }
 
@@ -50,13 +55,12 @@ class BreadthFirst extends Algorithm {
   findPath(current, solution = []) {
     if (_.isUndefined(current)) { return undefined; }
     if (_.isEqual(current, this.destination)) { return solution; }
-    
+
     this.cache.history.push(current);
 
     this.cache.queue.push(..._.map(
       _.filter(current.vectors, (considered) => !Algorithm
-        .existsInCollection(considered.destination, this.cache.history)
-      ),
+        .existsInCollection(considered.destination, this.cache.history)),
       (enqueued) => [enqueued.destination, _.concat(solution, enqueued)]
     ));
 

@@ -215,39 +215,31 @@ describe('VectorMap', () => {
       ['⬛️', '⬛️', '⬛️', '⬛️', '🟩', '🟩', '🟩']
     ];
 
-    ['🟩', '🟩', '🪜', '⬛️', '⬛️', '⬛️', '⬛️'],
-    ['🟩', '🟩', '*️⃣', '➡️', '↘️', '🟩', '🪜'],
-    ['⬛️', '↗️', '🟩', '⬛️', '🟩', '⬇️', '⬛️'],
-    ['⬛️', '⬆️', '◻', '⬛️', '🪜', '↙️', '⬛️'],
-    ['🟩', '🟩', '↖️', '⬅️', '⬅️', '🟩', '⬛️'],
-    ['⬛️', '🪜', '🟩', '🪜', '🟩', '🟩', '🟩'],
-    ['⬛️', '⬛️', '⬛️', '⬛️', '🟩', '🟩', '🟩']
-
-    const vectorMap = VectorMap.twoDimensionalArrayToVectorMap(array);
+    const vectorMapPrint = VectorMap.twoDimensionalArrayToVectorMap(array);
 
     test('returns a unmodified VectorMap print when the path is empty', () => {
-      expect(vectorMap.printTraversal(undefined)).toMatchSnapshot();
-      expect(vectorMap.printTraversal(null)).toMatchSnapshot();
-      expect(vectorMap.printTraversal([])).toMatchSnapshot();
+      expect(vectorMapPrint.printTraversal(undefined)).toMatchSnapshot();
+      expect(vectorMapPrint.printTraversal(null)).toMatchSnapshot();
+      expect(vectorMapPrint.printTraversal([])).toMatchSnapshot();
     });
 
     test('throws an error for invalid paths', () => {
-      expect(() => vectorMap.printTraversal([
-        new Vector(new Node(-1, 0), vectorMap.findNode(0, 0), 1)
+      expect(() => vectorMapPrint.printTraversal([
+        new Vector(new Node(-1, 0), vectorMapPrint.findNode(0, 0), 1)
       ])).toThrowError('VectorMap: unknown path for traversal');
     });
 
     test('returns a modified VectorMap print with the path traversal', () => {
-      expect(vectorMap.printTraversal([
-        new Vector(vectorMap.findNode(3, 1), vectorMap.findNode(4, 1), 1),
-        new Vector(vectorMap.findNode(4, 1), vectorMap.findNode(5, 2), 1),
-        new Vector(vectorMap.findNode(5, 2), vectorMap.findNode(5, 3), 1),
-        new Vector(vectorMap.findNode(5, 3), vectorMap.findNode(4, 4), 1),
-        new Vector(vectorMap.findNode(4, 4), vectorMap.findNode(3, 4), 1),
-        new Vector(vectorMap.findNode(3, 4), vectorMap.findNode(2, 4), 1),
-        new Vector(vectorMap.findNode(2, 4), vectorMap.findNode(1, 3), 1),
-        new Vector(vectorMap.findNode(1, 3), vectorMap.findNode(1, 2), 1),
-        new Vector(vectorMap.findNode(1, 2), vectorMap.findNode(2, 1), 1)
+      expect(vectorMapPrint.printTraversal([
+        new Vector(vectorMapPrint.findNode(3, 1), vectorMapPrint.findNode(4, 1), 1),
+        new Vector(vectorMapPrint.findNode(4, 1), vectorMapPrint.findNode(5, 2), 1),
+        new Vector(vectorMapPrint.findNode(5, 2), vectorMapPrint.findNode(5, 3), 1),
+        new Vector(vectorMapPrint.findNode(5, 3), vectorMapPrint.findNode(4, 4), 1),
+        new Vector(vectorMapPrint.findNode(4, 4), vectorMapPrint.findNode(3, 4), 1),
+        new Vector(vectorMapPrint.findNode(3, 4), vectorMapPrint.findNode(2, 4), 1),
+        new Vector(vectorMapPrint.findNode(2, 4), vectorMapPrint.findNode(1, 3), 1),
+        new Vector(vectorMapPrint.findNode(1, 3), vectorMapPrint.findNode(1, 2), 1),
+        new Vector(vectorMapPrint.findNode(1, 2), vectorMapPrint.findNode(2, 1), 1)
       ])).toMatchSnapshot();
     });
   });
@@ -259,7 +251,7 @@ describe('VectorMap', () => {
      * 🟩🟩🟩
      */
     const vectorMapString = '🟩⬛️🟩\n🟩🟩🟩\n🟩🟩🟩';
-    const vectorMap = VectorMap.stringToVectorMap(vectorMapString);
+    const vectorMapLog = VectorMap.stringToVectorMap(vectorMapString);
 
     /**
      * ⬇️⬛️🟩
@@ -268,8 +260,8 @@ describe('VectorMap', () => {
      */
     const vectorString = '[origin] -[1]-> [destination]';
     const path = [
-      new Vector(vectorMap.findNode(0, 0), vectorMap.findNode(0, 1), 1),
-      new Vector(vectorMap.findNode(0, 1), vectorMap.findNode(1, 1), 1)
+      new Vector(vectorMapLog.findNode(0, 0), vectorMapLog.findNode(0, 1), 1),
+      new Vector(vectorMapLog.findNode(0, 1), vectorMapLog.findNode(1, 1), 1)
     ];
 
     const traversalString = '⬇️⬛️🟩\n➡️*️⃣🟩\n🟩🟩🟩';
@@ -277,24 +269,27 @@ describe('VectorMap', () => {
     beforeEach(() => {
       _.each(path, (vector) => {
         jest.spyOn(vector, 'print', 'get').mockReturnValue(vectorString);
-      })
-      jest.spyOn(vectorMap, 'print', 'get').mockReturnValue(vectorMapString);
-      jest.spyOn(vectorMap, 'printTraversal').mockReturnValue(traversalString);
+      });
+      jest.spyOn(vectorMapLog, 'print', 'get').mockReturnValue(vectorMapString);
+      jest.spyOn(vectorMapLog, 'printTraversal').mockReturnValue(traversalString);
       jest.spyOn(console, 'log').mockImplementation();
     });
 
     test('logs a printable sting representing the vector map', () => {
-      expect(vectorMap.logTraversal(path)).toBeUndefined();
+      expect(vectorMapLog.logTraversal(path)).toBeUndefined();
+      // eslint-disable-next-line no-console
       expect(console.log).toBeCalledWith(vectorMapString);
     });
 
     test('logs a printable sting representing the path', () => {
-      expect(vectorMap.logTraversal(path)).toBeUndefined();
+      expect(vectorMapLog.logTraversal(path)).toBeUndefined();
+      // eslint-disable-next-line no-console
       expect(console.log).toBeCalledWith(`Path: [\n\t${vectorString}\n\t${vectorString}\n]`);
     });
 
     test('logs a printable sting representing the path traversal on the vector map', () => {
-      expect(vectorMap.logTraversal(path)).toBeUndefined();
+      expect(vectorMapLog.logTraversal(path)).toBeUndefined();
+      // eslint-disable-next-line no-console
       expect(console.log).toBeCalledWith(traversalString);
     });
   });
@@ -344,6 +339,7 @@ describe('VectorMap', () => {
       jest.spyOn(console, 'log').mockImplementation();
 
       expect(vectorMap.log).toBeUndefined();
+      // eslint-disable-next-line no-console
       expect(console.log).toBeCalledWith(vectorMapString);
     });
   });

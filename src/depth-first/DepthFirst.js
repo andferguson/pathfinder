@@ -7,9 +7,11 @@ const Algorithm = require('../algorithm/Algorithm');
 /**
  * Class representing a depth-first search pathfinding algorithm. Utilizes an internal stack to
  * evaluate every Node a from deepest to shallowest.
- * 
- * @note This algorithm does not have any considerations for {@link Vector#magnitude}.
  *
+ * NOTE: This algorithm does not have any considerations for {@link Vector#magnitude}.
+ *
+ * @class
+ * @augments Algorithm
  * @example
  *                  ┌─┐
  *              ┌───┤A├───┐
@@ -28,12 +30,17 @@ const Algorithm = require('../algorithm/Algorithm');
  *   └─┘  └─┘  └─┘  └─┘  └─┘  └─┘  └─┘
  */
 class DepthFirst extends Algorithm {
+  /**
+   * Constructor for the DepthFirst class.
+   *
+   * @param {Node} destination The destination Node to search for.
+   */
   constructor(destination) {
     super(destination);
     // A collection of in-use data, used for recursive implementations.
     this.cache = {
       stack: [],
-      history: [],
+      history: []
     };
   }
 
@@ -48,13 +55,12 @@ class DepthFirst extends Algorithm {
   findPath(current, solution = []) {
     if (_.isUndefined(current)) { return undefined; }
     if (_.isEqual(current, this.destination)) { return solution; }
-    
+
     this.cache.history.push(current);
 
     this.cache.stack.push(..._.map(
       _.filter(current.vectors, (considered) => !Algorithm
-        .existsInCollection(considered.destination, this.cache.history)
-      ),
+        .existsInCollection(considered.destination, this.cache.history)),
       (stacked) => [stacked.destination, _.concat(solution, stacked)]
     ));
 

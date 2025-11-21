@@ -23,8 +23,8 @@ describe('Vector', () => {
       const originString = '[origin]';
       const destinationString = '[destination]';
 
-      jest.spyOn(origin, 'print', 'get').mockReturnValue(originString)
-      jest.spyOn(destination, 'print', 'get').mockReturnValue(destinationString)
+      jest.spyOn(origin, 'print', 'get').mockReturnValue(originString);
+      jest.spyOn(destination, 'print', 'get').mockReturnValue(destinationString);
 
       expect(vector.print).toBe(`${originString} -[${magnitude}]-> ${destinationString}`);
     });
@@ -38,6 +38,7 @@ describe('Vector', () => {
       jest.spyOn(console, 'log').mockImplementation();
 
       expect(vector.log).toBeUndefined();
+      // eslint-disable-next-line no-console
       expect(console.log).toBeCalledWith(vectorString);
     });
   });

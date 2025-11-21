@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dijkstra static findPath returns an array of directed vectors - easy 1`] = `
+"🟩⬛️🟩
+⬇️⬅️🟩
+*️⃣🟩🟩"
+`;

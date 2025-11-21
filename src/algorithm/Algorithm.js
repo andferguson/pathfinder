@@ -5,10 +5,15 @@ const Vector = require('../vector/Vector');
 
 /**
  * Class representing a pathfinding algorithm.
- * 
+ *
  * @class
  */
 class Algorithm {
+  /**
+   * Constructor for the Algorithm class.
+   *
+   * @param {Node} destination A destination Node to be searched for in a collection.
+   */
   constructor(destination) {
     // A collection of in-use data, used for recursive implementations.
     this.cache = {};

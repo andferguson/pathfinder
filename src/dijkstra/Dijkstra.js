@@ -3,70 +3,33 @@ const _ = require('lodash');
 const Algorithm = require('../algorithm/Algorithm');
 const Node = require('../node/Node');
 const Vector = require('../vector/Vector');
-
-class PriorityNode extends Node {
-  constructor(node, priority) {
-    super(node.x, node.y, node.key);
-
-    this.vectors = node.vectors;
-    this.priority = priority;
-    this.solution = [];
-  }
-};
-
-class MinPriorityQueue extends Array {
-  /**
-   * Check whether the queue has no elements.
-   */
-  get isEmpty() {
-    return Boolean(this.length);
-  }
-
-  /**
-   * Returns the highest-priority element but does not modify the queue
-   */
-  get peek() {
-    return _.head(this);
-  }
-
-  /**
-   * Add an element to the queue with an associated priority.
-   */
-  insertWithPriority(element) {
-    this.push(element)
-    return _.sortBy(this, 'priority');
-  }
-
-  /**
-   * Remove the element from the queue that has the highest priority, and return it.
-   */
-  pullHighestPriorityElement() {
-    return this.shift();
-  }
-}
+const MinPriorityQueue = require('./MinPriorityQueue');
 
 /**
  * Class representing a Dijkstra's based pathfinding algorithm. Utilizes an internal queue to
  * evaluate every Node a from closest to furthest by magnitude.
  *
- * @example
- * 
  * @class
  * @augments Algorithm
  */
 class Dijkstra extends Algorithm {
+  /**
+   * Constructor for the Dijkstra class.
+   *
+   * @param {Node} destination The destination node to search for.
+   */
   constructor(destination) {
     super(destination);
     // A collection of in-use data, used for recursive implementations.
     this.cache = {
-      queue: MinPriorityQueue,
-      history: [],
+      queue: new MinPriorityQueue(),
+      history: []
     };
   }
 
   /**
-   * A prototype method for finding a path between two points through a directed graph. Will return
-   * undefined if not valid path is found.
+   * A static method for finding a path between two points through a directed graph. Will return
+   * undefined if no valid path is found.
    *
    * @static
    * @param {Node} origin An origin Node within a directed graph.
@@ -80,64 +43,56 @@ class Dijkstra extends Algorithm {
       throw new Error('Algorithm: destination node must be defined');
     }
 
-    return new this(destination).findPath(new PriorityNode(origin, 0));
+    return new this(destination).findPath(origin);
   }
-  
-  /**
-   * 1. if current priority does not exist, add set it to 0
-   * 2. add current node (A) to history to mark as seen
-   * 3. add all that node's vectors that have destinations not in history to the queue,
-   *  by a adding their magnitude to their parent's magnitue
-   *  {node, priority: node.magnitude + A.priority: solution: [...solution, vector]) }
-   * 
-   * if destination node is already in queue, change its priority to min and resort queue
-   * 
-   * recurse with first node in queue
-   */
 
   /**
    * An instance method for finding a path between two points through a directed graph. Will return
    * undefined if no valid path is found.
    *
-   * @param {PriorityNode} current A current PriorityNode within a directed graph.
+   * @param {Node} current A current Node within a directed graph.
+   * @param {Vector[]} solution A partial solution, used for recursive implementations.
+   * @param {number} cumulativeCost The cumulative cost from the origin to the current node.
    * @returns {Vector[]|undefined} A path represented with an array of Vectors, or undefined.
    */
-  findPath(current) {
-    if (_.isUndefined(current)) { return undefined; }
-    if (_.isEqual(current, this.destination)) { return this.solution; }
-
-    this.cache.history.push(current.node);
-
-    new PriorityNode(origin, 0)
-
-    this.cache.queue.insertWithPriority
-
-    _.filter(current.vectors, (considered) => !Algorithm
-      .existsInCollection(considered.destination, this.cache.history)
-    ),
-
-
-
-
-
-
-
-
-
-
+  findPath(current, solution = [], cumulativeCost = 0) {
     if (_.isUndefined(current)) { return undefined; }
     if (_.isEqual(current, this.destination)) { return solution; }
-    
+
     this.cache.history.push(current);
 
-    this.cache.queue.add_with_priority(..._.map(
-      _.filter(current.vectors, (considered) => !Algorithm
-        .existsInCollection(considered.destination, this.cache.history)
-      ),
-      (enqueued) => [enqueued.destination, _.concat(solution, enqueued)]
-    ), 0);
+    // Get all unvisited neighbors and add them to queue with calculated priority
+    _.filter(
+      current.vectors,
+      (considered) => !Algorithm.existsInCollection(considered.destination, this.cache.history)
+    ).forEach((vector) => {
+      // Calculate cumulative cost to reach this neighbor
+      const newCost = cumulativeCost + vector.magnitude;
 
-    return this.findPath(...[this.cache.queue.shift()].flat());
+      // Check if this destination is already in queue with a higher cost
+      const existingEntry = _.find(
+        this.cache.queue.items,
+        (item) => _.isEqual(item.node, vector.destination)
+      );
+
+      if (!existingEntry || newCost < existingEntry.priority) {
+        // Create entry for queue: destination, solution, and cumulative cost
+        const entry = {
+          node: vector.destination,
+          solution: _.concat(solution, vector),
+          priority: newCost
+        };
+
+        this.cache.queue.insertWithPriority(entry);
+      }
+    });
+
+    // Get next node from queue
+    const next = this.cache.queue.pullHighestPriorityElement();
+
+    if (_.isUndefined(next)) { return undefined; }
+
+    return this.findPath(next.node, next.solution, next.priority);
   }
 }
 

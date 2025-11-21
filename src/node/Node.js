@@ -2,22 +2,29 @@ const Vector = require('../vector/Vector');
 
 /**
  * Class representing a point.
- * 
+ *
  * @class
  */
 class Node {
+  /**
+   * Constructor for the Node class.
+   *
+   * @param {number} x The x coordinate of this Node within a two-dimensional plane.
+   * @param {number} y The y coordinate of this Node within a two-dimensional plane.
+   * @param {string} key The display character of this Node.
+   */
   constructor(x, y, key) {
-    this.x = x;         // The x coordinate of this Node within a two-dimensional plane
-    this.y = y;         // The y coordinate of this Node within a two-dimensional plane
-    this.key = key;     // The display character of this Node
+    this.x = x; // The x coordinate of this Node within a two-dimensional plane
+    this.y = y; // The y coordinate of this Node within a two-dimensional plane
+    this.key = key; // The display character of this Node
 
-    this.vectors = [];  // A Vector[] representing all Vectors connecting this Node to others
+    this.vectors = []; // A Vector[] representing all Vectors connecting this Node to others
   }
 
   /**
    * Creates a new Vector, which directs from this Node to another with a given magnitude.
    *
-   * Note: This method will make a unidirectional Vector. To make bidirectional Vectors, this method
+   * NOTE: This method will make a unidirectional Vector. To make bidirectional Vectors, this method
    * must be used twice, or use {@link Node#createBidirectionalVector}.
    *
    * @param {Node} node The Node to which this new vector will be directed.
@@ -31,7 +38,7 @@ class Node {
    * Creates a pair of new Vectors, which direct both ways between this Node and another with a
    * given magnitude.
    *
-   * Note: This method will make Vectors of equal magnitude in both directions. To make directed
+   * NOTE: This method will make Vectors of equal magnitude in both directions. To make directed
    * graphs, use {@link Node#createDirectedVector}.
    *
    * @param {Node} node The Node to and from which new Vectors will be directed.
@@ -51,9 +58,11 @@ class Node {
 
   /**
    * Console logs the string representation of the Node on which this is called.
+   *
+   * @returns {undefined}
    */
   // eslint-disable-next-line no-console
-  get log() { console.log(this.print); }
+  get log() { return console.log(this.print); }
 }
 
 module.exports = Node;

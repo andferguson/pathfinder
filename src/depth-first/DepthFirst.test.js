@@ -57,7 +57,7 @@ describe('DepthFirst', () => {
         /**
          * 🟩⬛️🟩
          * 🟩⬇️🟩
-         * *️⃣⬅️🟩
+         * ️⃣⬅️🟩
          */
         expect(DepthFirst.findPath(
           vectorMap.findNode(1, 1),

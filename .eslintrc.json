@@ -14,9 +14,27 @@
   },
   "rules": {
     "comma-dangle": ["error", "never"],
+    "no-console": "error",
     "no-underscore-dangle": 0,
     "one-var": ["error", { "initialized": "never" }],
     "one-var-declaration-per-line": ["error", "initializations"],
-    "space-before-blocks": "error"
+    "space-before-blocks": "error",
+    "jsdoc/require-jsdoc": ["error", {
+      "require": {
+        "FunctionDeclaration": true,
+        "MethodDefinition": true,
+        "ClassDeclaration": true,
+        "ArrowFunctionExpression": false,
+        "FunctionExpression": false
+      }
+    }],
+    "jsdoc/require-param-description": "error",
+    "jsdoc/require-returns-description": "error",
+    "jsdoc/require-param-type": "error",
+    "jsdoc/require-returns-type": "error",
+    "jsdoc/require-returns": "error",
+    "jsdoc/tag-lines": ["error", "never", {
+        "startLines": 1
+    }]
   }
 }

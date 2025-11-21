@@ -71,7 +71,7 @@ describe('Node', () => {
 
   describe('get print', () => {
     test('returns a printable sting representing the node', () => {
-      expect(node.print).toBe(`[${key}]{${x}, ${y}}`); 
+      expect(node.print).toBe(`[${key}]{${x}, ${y}}`);
     });
   });
 
@@ -83,6 +83,7 @@ describe('Node', () => {
       jest.spyOn(console, 'log').mockImplementation();
 
       expect(node.log).toBeUndefined();
+      // eslint-disable-next-line no-console
       expect(console.log).toBeCalledWith(nodeString);
     });
   });

@@ -1,5 +1,4 @@
 const Algorithm = require('../algorithm/Algorithm');
-const defaultKeys = require('../keys.json');
 const Vector = require('../vector/Vector');
 const VectorMap = require('../vector-map/VectorMap');
 
@@ -84,7 +83,7 @@ describe('BreadthFirst', () => {
         ]);
 
         /**
-         * *️⃣⬛️🟩
+         * ️⃣⬛️🟩
          * ⬆️🟩🟩
          * ⬆️⬅️⬅️
          */
