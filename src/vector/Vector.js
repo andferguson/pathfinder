@@ -20,6 +20,7 @@ class Vector {
   /**
    * Console logs the string representation of the Vector on which this is called.
    */
+  // eslint-disable-next-line no-console
   get log() { console.log(this.print); }
 }
 
