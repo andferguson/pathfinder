@@ -1,4 +1,5 @@
 const Algorithm = require('../algorithm/Algorithm');
+const Vector = require('../vector/Vector');
 const VectorMap = require('../vector-map/VectorMap');
 
 const Dijkstra = require('./Dijkstra');
@@ -55,12 +56,126 @@ describe('Dijkstra', () => {
 
         /**
          * 🟩⬛️🟩
-         * 🟩⬇️🟩
-         * ️⃣⬅️🟩
+         * ⬇️⬅️🟩
+         * *️⃣🟩🟩
          */
-        expect(vectorMap.printTraversal(Dijkstra.findPath(
+        expect(Dijkstra.findPath(
           vectorMap.findNode(1, 1),
           vectorMap.findNode(0, 2)
+        )).toEqual([
+          new Vector(vectorMap.findNode(1, 1), vectorMap.findNode(0, 1), 1),
+          new Vector(vectorMap.findNode(0, 1), vectorMap.findNode(0, 2), 1)
+        ]);
+
+        /**
+         * 🟩⬛️⬇️
+         * 🟩⬇️⬅️
+         * 🟩*️⃣🟩
+         */
+        expect(Dijkstra.findPath(
+          vectorMap.findNode(2, 0),
+          vectorMap.findNode(1, 2)
+        )).toEqual([
+          new Vector(vectorMap.findNode(2, 0), vectorMap.findNode(2, 1), 1),
+          new Vector(vectorMap.findNode(2, 1), vectorMap.findNode(1, 1), 1),
+          new Vector(vectorMap.findNode(1, 1), vectorMap.findNode(1, 2), 1),
+        ]);
+
+        /**
+         * ⬇️⬛️*️⃣
+         * ➡️➡️⬆️
+         * 🟩🟩🟩
+         */
+        expect(Dijkstra.findPath(
+          vectorMap.findNode(0, 0),
+          vectorMap.findNode(2, 0)
+        )).toEqual([
+          new Vector(vectorMap.findNode(0, 0), vectorMap.findNode(0, 1), 1),
+          new Vector(vectorMap.findNode(0, 1), vectorMap.findNode(1, 1), 1),
+          new Vector(vectorMap.findNode(1, 1), vectorMap.findNode(2, 1), 1),
+          new Vector(vectorMap.findNode(2, 1), vectorMap.findNode(2, 0), 1)
+        ]);
+      });
+
+      test('returns an array of directed vectors - medium', () => {
+        /**
+         * 🟩🟩🟩⬛️🟩
+         * 🟩🟩🟩🟩🟩
+         * ⬛️🟩🟩🟩🟩
+         * ⬛️🟩🟩⬛️🟩
+         * ⬛️⬛️⬛️⬛️🟩
+         */
+        const array = [
+          ['🟩', '🟩', '🟩', '⬛️', '🟩'],
+          ['🟩', '🟩', '🟩', '🟩', '🟩'],
+          ['⬛️', '🟩', '🟩', '🟩', '🟩'],
+          ['⬛️', '🟩', '🟩', '⬛️', '🟩'],
+          ['⬛️', '⬛️', '⬛️', '⬛️', '🟩']
+        ];
+
+        const vectorMap = VectorMap.twoDimensionalArrayToVectorMap(array);
+
+        expect(vectorMap.printTraversal(Dijkstra.findPath(
+          vectorMap.findNode(0, 0),
+          vectorMap.findNode(4, 4)
+        ))).toMatchSnapshot();
+
+        expect(vectorMap.printTraversal(Dijkstra.findPath(
+          vectorMap.findNode(4, 4),
+          vectorMap.findNode(0, 0)
+        ))).toMatchSnapshot();
+
+        expect(vectorMap.printTraversal(Dijkstra.findPath(
+          vectorMap.findNode(4, 0),
+          vectorMap.findNode(1, 3)
+        ))).toMatchSnapshot();
+
+        expect(vectorMap.printTraversal(Dijkstra.findPath(
+          vectorMap.findNode(1, 3),
+          vectorMap.findNode(4, 0)
+        ))).toMatchSnapshot();
+      });
+
+      test('returns an array of directed vectors - hard', () => {
+        /**
+         * 🟩🟩🪜⬛️⬛️⬛️⬛️
+         * 🟩🟩🟩🪜🟩🟩🪜
+         * ⬛️⬛️🟩⬛️🟩🟩⬛️
+         * ⬛️🟩🟩⬛️🪜🟩⬛️
+         * 🟩🟩🟩⬛️🪜🟩⬛️
+         * ⬛️🪜🟩🪜🟩🟩🟩
+         * ⬛️⬛️⬛️⬛️🟩🟩🟩
+         */
+        const array = [
+          ['🟩', '🟩', '🪜', '⬛️', '⬛️', '⬛️', '⬛️'],
+          ['🟩', '🟩', '🟩', '🪜', '🟩', '🟩', '🪜'],
+          ['⬛️', '⬛️', '🟩', '⬛️', '🟩', '🟩', '⬛️'],
+          ['⬛️', '🟩', '🟩', '⬛️', '🪜', '🟩', '⬛️'],
+          ['🟩', '🟩', '🟩', '⬛️', '🪜', '🟩', '⬛️'],
+          ['⬛️', '🪜', '🟩', '🪜', '🟩', '🟩', '🟩'],
+          ['⬛️', '⬛️', '⬛️', '⬛️', '🟩', '🟩', '🟩']
+        ];
+
+        const vectorMap = VectorMap.twoDimensionalArrayToVectorMap(array);
+
+        expect(vectorMap.printTraversal(Dijkstra.findPath(
+          vectorMap.findNode(0, 0),
+          vectorMap.findNode(6, 6)
+        ))).toMatchSnapshot();
+
+        expect(vectorMap.printTraversal(Dijkstra.findPath(
+          vectorMap.findNode(6, 6),
+          vectorMap.findNode(0, 0)
+        ))).toMatchSnapshot();
+
+        expect(vectorMap.printTraversal(Dijkstra.findPath(
+          vectorMap.findNode(0, 6),
+          vectorMap.findNode(6, 0)
+        ))).toMatchSnapshot();
+
+        expect(vectorMap.printTraversal(Dijkstra.findPath(
+          vectorMap.findNode(6, 0),
+          vectorMap.findNode(0, 6)
         ))).toMatchSnapshot();
       });
     });
