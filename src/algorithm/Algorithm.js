@@ -4,11 +4,21 @@ const Node = require('../node/Node');
 const Vector = require('../vector/Vector');
 
 /**
- * Class representing a pathfinding algorithm.
- * 
+ * Base class for pathfinding algorithms.
+ *
+ * This abstract class defines the interface for pathfinding implementations. All pathfinding
+ * algorithms should extend this class and implement the `findPath` instance method to provide
+ * their specific pathfinding logic.
+ *
  * @class
+ * @abstract
  */
 class Algorithm {
+  /**
+   * Constructor for the Algorithm class.
+   *
+   * @param {Node} destination A destination Node to be searched for in a collection.
+   */
   constructor(destination) {
     // A collection of in-use data, used for recursive implementations.
     this.cache = {};
