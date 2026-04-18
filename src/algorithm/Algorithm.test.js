@@ -20,17 +20,17 @@ describe('Algorithm', () => {
     describe('findPath', () => {
       test('throws an error when origin is not a Node', () => {
         expect(() => { Algorithm.findPath('Node', destination); })
-          .toThrowError('Algorithm: origin node must be defined');
+          .toThrow('Algorithm: origin node must be defined');
       });
 
       test('throws an error when destination is not a Node', () => {
         expect(() => { Algorithm.findPath(origin, 'Node'); })
-          .toThrowError('Algorithm: destination node must be defined');
+          .toThrow('Algorithm: destination node must be defined');
       });
 
       test('uses a new instance of Algorithm and calls findPath on it', () => {
         expect(() => { Algorithm.findPath(origin, destination); })
-          .toThrowError('Algorithm: findPath method must be implemented in a sub-class');
+          .toThrow('Algorithm: findPath method must be implemented in a sub-class');
       });
     });
 
@@ -59,15 +59,15 @@ describe('Algorithm', () => {
   describe('findPath', () => {
     test('throws an error', () => {
       expect(() => { new Algorithm().findPath(); })
-        .toThrowError('Algorithm: findPath method must be implemented in a sub-class');
+        .toThrow('Algorithm: findPath method must be implemented in a sub-class');
       expect(() => { new Algorithm().findPath(undefined, undefined); })
-        .toThrowError('Algorithm: findPath method must be implemented in a sub-class');
+        .toThrow('Algorithm: findPath method must be implemented in a sub-class');
       expect(() => { new Algorithm().findPath(origin, undefined); })
-        .toThrowError('Algorithm: findPath method must be implemented in a sub-class');
+        .toThrow('Algorithm: findPath method must be implemented in a sub-class');
       expect(() => { new Algorithm().findPath(undefined, destination); })
-        .toThrowError('Algorithm: findPath method must be implemented in a sub-class');
+        .toThrow('Algorithm: findPath method must be implemented in a sub-class');
       expect(() => { new Algorithm().findPath(origin, destination); })
-        .toThrowError('Algorithm: findPath method must be implemented in a sub-class');
+        .toThrow('Algorithm: findPath method must be implemented in a sub-class');
     });
   });
 });

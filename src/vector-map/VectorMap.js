@@ -5,11 +5,24 @@ const Node = require('../node/Node');
 const Vector = require('../vector/Vector');
 
 /**
- * Class representing a two-dimensional plane comprised of nodes connected by vectors.
- * 
+ * Represents a two-dimensional grid of nodes in a pathfinding graph.
+ *
+ * VectorMap manages a 2D plane of nodes, providing utilities for node lookup, traversability
+ * validation, and path visualization. It supports creation from emoji strings or 2D arrays,
+ * and maintains configurable traversability rules via keys.json to determine which nodes and
+ * connections are valid for pathfinding algorithms.
+ *
  * @class
  */
 class VectorMap {
+  /**
+   * Constructor for the VectorMap class.
+   *
+   * @param {number} width The width of the vector map.
+   * @param {number} height The height of the vector map.
+   * @param {Node[]} nodes The nodes in the vector map.
+   * @param {object} keys The keys object defining traversable keys.
+   */
   constructor(width, height, nodes = [], keys = defaultKeys) {
     this.width = width;
     this.height = height;
@@ -22,9 +35,9 @@ class VectorMap {
    *
    * @static
    * @param {string} str A string to convert to a vector map.
-   * @example
-   * str = "◻︎◻︎◻︎◼︎◼︎◼︎◼︎\n◻︎◻︎◻︎◘◻︎◻︎◼︎\n◼︎◻︎◻︎◼︎◻︎◻︎◼︎\n◼︎◻︎◻︎◼︎◻︎◻︎◻︎\n◼︎◼︎◼︎◼︎◻︎◻︎◻︎";
    * @returns {VectorMap} A new VectorMap.
+   * @example
+   * str = "🟩🟩🟩⬛️⬛️⬛️⬛️\n🟩🟩🟩🪜🟩🟩⬛️\n⬛️🟩🟩⬛️🟩🟩⬛️\n⬛️🟩🟩⬛️🟩🟩🟩\n⬛️⬛️⬛️⬛️🟩🟩🟩";
    */
   static stringToVectorMap(str) {
     const arrayRepresentation = _.map(_.split(str, '\n'), (row) => _.split(row, ''));
@@ -37,15 +50,15 @@ class VectorMap {
    *
    * @static
    * @param {string[][]} arr An array of arrays of strings to convert to a vector map.
+   * @returns {VectorMap} A new VectorMap.
    * @example
    * arr = [
-   *  ['◻︎', '◻︎', '◻︎', '◼︎', '◼︎', '◼︎', '◼︎'],
-   *  ['◻︎', '◻︎', '◻︎', '◘', '◻︎', '◻︎', '◼︎'],
-   *  ['◼︎', '◻︎', '◻︎', '◼︎', '◻︎', '◻︎', '◼︎'],
-   *  ['◼︎', '◻︎', '◻︎', '◼︎', '◻︎', '◻︎', '◻︎'],
-   *  ['◼︎', '◼︎', '◼︎', '◼︎', '◻︎', '◻︎', '◻︎']
+   *  ['🟩', '🟩', '🟩', '⬛️', '⬛️', '⬛️', '⬛️'],
+   *  ['🟩', '🟩', '🟩', '🪜', '🟩', '🟩', '⬛️'],
+   *  ['⬛️', '🟩', '🟩', '⬛️', '🟩', '🟩', '⬛️'],
+   *  ['⬛️', '🟩', '🟩', '⬛️', '🟩', '🟩', '🟩'],
+   *  ['⬛️', '⬛️', '⬛️', '⬛️', '🟩', '🟩', '🟩']
    * ];
-   * @returns {VectorMap} A new VectorMap.
    */
   static twoDimensionalArrayToVectorMap(arr) {
     const height = arr.length;
@@ -62,6 +75,7 @@ class VectorMap {
         const key = arr[heightIndex][widthIndex];
 
         if (!_.has(vectorMap, `keys[${key}]`)) {
+          // istanbul ignore next
           throw new Error(
             `VectorMap: attempted to parse unknown key: [${key}] at (${heightIndex}, ${widthIndex})`
           );
@@ -133,7 +147,7 @@ class VectorMap {
   /**
    * Returns a string representation of a path overlaid on the VectorMap on which this is called.
    *
-   * @param {Vector[]} path 
+   * @param {Vector[]} path The path to overlay on the VectorMap.
    * @returns {string} A string representation of a path overlaid on this VectorMap.
    */
   printTraversal(path) {
@@ -147,54 +161,67 @@ class VectorMap {
         if (_.isNil(current) || _.isNil(next)) {
           throw new Error('VectorMap: unknown path for traversal');
         }
-  
-        switch(Math.sign(x1 - x2)) {
+
+        switch (Math.sign(x1 - x2)) {
           case -1:
-            switch(Math.sign(y1 - y2)) {
-              case -1: current.key = '↘︎'; break;
-              case 1: current.key = '↗︎'; break;
-              case 0: current.key = '→'; break;
+            switch (Math.sign(y1 - y2)) {
+              case -1: current.key = '↘️'; break;
+              case 1: current.key = '↗️'; break;
+              case 0: current.key = '➡️'; break;
+              /* istanbul ignore next */
+              default: throw new Error('VectorMap: unknown path for traversal');
             } break;
+
           case 1:
-            switch(Math.sign(y1 - y2)) {
-              case -1: current.key = '↙︎'; break;
-              case 1: current.key = '↖︎'; break;
-              case 0: current.key = '←'; break;
+            switch (Math.sign(y1 - y2)) {
+              case -1: current.key = '↙️'; break;
+              case 1: current.key = '↖️'; break;
+              case 0: current.key = '⬅️'; break;
+              /* istanbul ignore next */
+              default: throw new Error('VectorMap: unknown path for traversal');
             } break;
           case 0:
-            switch(Math.sign(y1 - y2)) {
-              case -1: current.key = '↓'; break;
-              case 1: current.key = '↑'; break;
-              case 0: current.key = '✪'; break;
-            } break;
+            switch (Math.sign(y1 - y2)) {
+              case -1: current.key = '⬇️'; break;
+              case 1: current.key = '⬆️'; break;
+              case 0: current.key = '🔄'; break;
+              /* istanbul ignore next */
+              default: throw new Error('VectorMap: unknown path for traversal');
+            }
+            break;
+          /* istanbul ignore next */
+          default: throw new Error('VectorMap: unknown path for traversal');
         }
       });
-  
-      const {x, y} = _.last(path).destination;
-      safeClone.findNode(x, y).key = '✪';
+
+      const { x, y } = _.last(path).destination;
+      safeClone.findNode(x, y).key = '*️⃣';
     }
 
-    return safeClone.print
+    return safeClone.print;
   }
 
   /**
    * Console logs a string representation of a path overlaid on the VectorMap on which this is
    * called.
    *
-   * @param {Vector[]} path 
+   * @param {Vector[]} path The path to log.
+   * @returns {void}
    */
   logTraversal(path) {
-    this.log
+    /* eslint-disable no-console */
+    console.log(this.print);
     console.log(`Path: [\n\t${_.map(path, 'print').join('\n\t')}\n]`);
     console.log(this.printTraversal(path));
+    /* eslint-enable no-console */
   }
 
   /**
    * A helper method for creating an appropriate two-dimensional array representation of a
    * VectorMap.
    *
-   * Note: The reverse of {@link VectorMap#twoDimensionalArrayToVectorMap}.
-   * Warning: Vector data is not represented with this method.
+   * NOTE: The reverse of {@link VectorMap#twoDimensionalArrayToVectorMap}.
+   * WARNING: Vector data is not represented with this method.
    *
    * @returns {string[][]} An array of arrays of strings representation of a VectorMap.
    */
@@ -204,9 +231,9 @@ class VectorMap {
 
   /**
    * Returns a string representation of the VectorMap on which this is called.
-   * 
-   * Note: The reverse of {@link VectorMap#stringToVectorMap}.
-   * Warning: Vector data is not represented with this method.
+   *
+   * NOTE: The reverse of {@link VectorMap#stringToVectorMap}.
+   * WARNING: Vector data is not represented with this method.
    *
    * @returns {string} A string representation of this VectorMap.
    */
@@ -214,8 +241,11 @@ class VectorMap {
 
   /**
    * Console logs the string representation of the VectorMap on which this is called.
+   *
+   * @returns {undefined}
    */
-  get log() { console.log(this.print); }
+  // eslint-disable-next-line no-console
+  get log() { return console.log(this.print); }
 }
 
 module.exports = VectorMap;

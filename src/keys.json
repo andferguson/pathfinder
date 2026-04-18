@@ -1,36 +1,71 @@
 {
-  "◻︎": {
+  "🟩": {
     "meta": {
-      "name": "path",
+      "name": "grass",
       "description": "A normal path that can be traversed."
     },
     "magnitude": 1,
+    "defense": 1,
     "traversableKeys": [
-      "◻︎",
-      "◘"
+      "🟩",
+      "🪜",
+      "🌲",
+      "⛰️"
     ]
   },
-  "◼︎": {
+  "⬛️": {
     "meta": {
       "name": "wall",
       "description": "A high wall that can be traversed."
     },
     "magnitude": 1,
+    "defense": 0,
     "traversableKeys": [
-      "◼︎",
-      "◘"
+      "⬛️",
+      "🪜"
     ]
   },
-  "◘": {
+  "🪜": {
     "meta": {
       "name": "step",
       "description": "A step that can transition between paths and walls."
     },
-    "magnitude": 2,
+    "magnitude": 1,
+    "defense": 0,
     "traversableKeys": [
-      "◻︎",
-      "◼︎",
-      "◘"
+      "🟩",
+      "⬛️",
+      "🪜",
+      "🌲",
+      "⛰️"
+    ]
+  },
+  "🌲": {
+    "meta": {
+      "name": "trees",
+      "description": "A forest path that can be traversed somewhat slowly."
+    },
+    "magnitude": 2,
+    "defense": 2,
+    "traversableKeys": [
+      "🟩",
+      "🪜",
+      "🌲",
+      "⛰️"
+    ]
+  },
+  "⛰️": {
+    "meta": {
+      "name": "mountains",
+      "description": "A mountain path that can be traversed very slowly."
+    },
+    "magnitude": 3,
+    "defense": 3,
+    "traversableKeys": [
+      "🟩",
+      "🪜",
+      "🌲",
+      "⛰️"
     ]
   }
 }

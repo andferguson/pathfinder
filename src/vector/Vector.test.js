@@ -5,8 +5,8 @@ describe('Vector', () => {
   let destination, magnitude, origin, vector;
 
   beforeEach(() => {
-    origin = new Node(1, 2, '◻︎');
-    destination = new Node(2, 2, '◻︎');
+    origin = new Node(1, 2, '🟩');
+    destination = new Node(2, 2, '🟩');
     magnitude = 0.05;
     vector = new Vector(origin, destination, magnitude);
   });
@@ -23,8 +23,8 @@ describe('Vector', () => {
       const originString = '[origin]';
       const destinationString = '[destination]';
 
-      jest.spyOn(origin, 'print', 'get').mockReturnValue(originString)
-      jest.spyOn(destination, 'print', 'get').mockReturnValue(destinationString)
+      jest.spyOn(origin, 'print', 'get').mockReturnValue(originString);
+      jest.spyOn(destination, 'print', 'get').mockReturnValue(destinationString);
 
       expect(vector.print).toBe(`${originString} -[${magnitude}]-> ${destinationString}`);
     });
@@ -38,7 +38,8 @@ describe('Vector', () => {
       jest.spyOn(console, 'log').mockImplementation();
 
       expect(vector.log).toBeUndefined();
-      expect(console.log).toBeCalledWith(vectorString);
+      // eslint-disable-next-line no-console
+      expect(console.log).toHaveBeenCalledWith(vectorString);
     });
   });
 });

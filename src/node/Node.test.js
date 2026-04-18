@@ -7,7 +7,7 @@ describe('Node', () => {
   beforeEach(() => {
     x = 3;
     y = 5;
-    key = '◻︎';
+    key = '🟩';
     node = new Node(x, y, key);
   });
 
@@ -71,19 +71,20 @@ describe('Node', () => {
 
   describe('get print', () => {
     test('returns a printable sting representing the node', () => {
-      expect(node.print).toBe(`[${key}]{${x}, ${y}}`); 
+      expect(node.print).toBe(`[${key}]{${x}, ${y}}`);
     });
   });
 
   describe('get log', () => {
     test('console logs a printable sting representing the node', () => {
-      const nodeString = '[◻︎](3, 5)';
+      const nodeString = '[🟩](3, 5)';
 
       jest.spyOn(node, 'print', 'get').mockReturnValue(nodeString);
       jest.spyOn(console, 'log').mockImplementation();
 
       expect(node.log).toBeUndefined();
-      expect(console.log).toBeCalledWith(nodeString);
+      // eslint-disable-next-line no-console
+      expect(console.log).toHaveBeenCalledWith(nodeString);
     });
   });
 });
